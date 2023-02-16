@@ -1,6 +1,7 @@
 part of 'post_cubit.dart';
 
 enum UserStatus {
+  searchingStatus,
   initial,
   loading,
   success,
