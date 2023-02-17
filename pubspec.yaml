@@ -43,7 +43,10 @@ dependencies:
   path_provider: ^2.0.11
   provider: ^6.0.5
   get_it: ^7.2.0
-
+  mixins: ^0.0.11
+  path: ^1.8.2
+  shared_preferences: ^2.0.15
+  email_validator: '^2.1.16'
 
 dev_dependencies:
   flutter_test:

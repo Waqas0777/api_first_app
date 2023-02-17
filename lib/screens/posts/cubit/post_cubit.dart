@@ -99,28 +99,7 @@ class PostCubit extends Cubit<PostState> {
     // }
   }
 
-  //search on specific field
-  // Future<List<PostModel>> onSearch(String searchQuery) async {
-  //   //log(value, name: "value");
-  //   List<PostModel> filteredItems = postList
-  //       .where((item) =>
-  //           item.title!.toLowerCase().contains(searchQuery.toLowerCase()))
-  //       .toList();
-  //   for (var element in filteredItems) {
-  //     log("${element.title}", name: "element");
-  //     //log("${filteredItems} $searchQuery", name: "filteredItems");
-  //     PostModel postModel = PostModel(
-  //         userId: element.userId,
-  //         id: element.id,
-  //         title: element.title,
-  //         body: element.body);
-  //     resultList.add(postModel);
-  //   }
-  //   emit(
-  //       state.copyWith(status: UserStatus.searchingStatus, pModel: filteredItems));
-  //   log("$state", name: "state");
-  //   return resultList;
-  // }
+
 
   //search on  model
   Future<List<PostModel>> onSearch(String searchQuery) async {
@@ -146,7 +125,28 @@ class PostCubit extends Cubit<PostState> {
   }
 }
 
-
+//search on specific field
+// Future<List<PostModel>> onSearch(String searchQuery) async {
+//   //log(value, name: "value");
+//   List<PostModel> filteredItems = postList
+//       .where((item) =>
+//           item.title!.toLowerCase().contains(searchQuery.toLowerCase()))
+//       .toList();
+//   for (var element in filteredItems) {
+//     log("${element.title}", name: "element");
+//     //log("${filteredItems} $searchQuery", name: "filteredItems");
+//     PostModel postModel = PostModel(
+//         userId: element.userId,
+//         id: element.id,
+//         title: element.title,
+//         body: element.body);
+//     resultList.add(postModel);
+//   }
+//   emit(
+//       state.copyWith(status: UserStatus.searchingStatus, pModel: filteredItems));
+//   log("$state", name: "state");
+//   return resultList;
+// }
 
 
 

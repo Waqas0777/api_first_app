@@ -195,7 +195,14 @@ class _PostScreenState extends State<PostScreen> {
 
 
   Widget buildSearchViewWidget(BuildContext context, PostState state) {
-    return ListView.builder(
+    return (state.pModel!.isEmpty)? Container(
+      padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Color(0xffaabbaa),
+
+        ),
+        child: const Text("No Such Data Exits" , style: TextStyle(fontSize: 15,color: Colors.deepPurpleAccent),)): ListView.builder(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         physics: const ScrollPhysics(),
