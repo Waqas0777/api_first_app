@@ -33,34 +33,28 @@ class _LoginScreenState extends State<LoginScreen> {
         title: const Text("Login Screen"),
       ),
       body: SafeArea(
-        child: BlocBuilder<LoginCubit, LoginState>(
-          builder: (context, state) {
-            return Column(
-              children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                buildFormWidget(),
-
-                CupertinoButton(
-                  color: Colors.blue,
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      BlocProvider.of<LoginCubit>(context).fetchUsers(context,userEmailController.text.toString());
-                      // BlocProvider.of<LoginCubit>(context).login(
-                      //   context,
-                      //   userEmailController.text.trim(),
-                      // );
-                      // userPasswordController.text.trim(),
-                    }
-                  },
-                  child: const Text("Login"),
-                ),
-              ],
-            );
-          },
-        ),
-      ),
+          child: Column(
+        children: [
+          const SizedBox(
+            height: 20,
+          ),
+          buildFormWidget(),
+          BlocBuilder<LoginCubit, LoginState>(
+            builder: (context, state) {
+              return CupertinoButton(
+                color: Colors.blue,
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    BlocProvider.of<LoginCubit>(context).fetchUsers(
+                        context, userEmailController.text.toString());
+                  }
+                },
+                child: const Text("Login"),
+              );
+            },
+          ),
+        ],
+      )),
     );
   }
 
@@ -105,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
             TextFormField(
               controller: userPasswordController,
               decoration: InputDecoration(
-                labelText: "Enter User Email",
+                labelText: "Enter Password",
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25.0),
@@ -119,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               validator: (value) {
                 if (value!.isEmpty) {
-                  return 'Please enter your Email';
+                  return 'Please enter your Password';
                 }
                 // else if(!EmailValidator.validate(value)){
                 //   return "Please Enter Valid Email";

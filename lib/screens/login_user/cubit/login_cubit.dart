@@ -9,7 +9,6 @@ import '../../../main.dart';
 import '../../../model/shared_preferences_model.dart';
 import '../../../model/user_model.dart';
 import 'package:http/http.dart' as http;
-
 import '../../user_posts/user_posts_screen.dart';
 import 'login_state.dart';
 
@@ -20,9 +19,10 @@ class LoginCubit extends Cubit<LoginState> {
   late List<UserModel> resultList = [];
   late String? user;
 
-  static const int timeOutDuration = 5;
+  static const int timeOutDuration = 10;
 
-  Future<List<UserModel>> fetchUsers(BuildContext context, String userEmail) async {
+  Future<List<UserModel>> fetchUsers(
+      BuildContext context, String userEmail) async {
     emit(state.copyWith(status: LoginStatus.loading));
 
     try {
@@ -31,34 +31,71 @@ class LoginCubit extends Cubit<LoginState> {
           .timeout(const Duration(seconds: timeOutDuration));
       if (response.statusCode == 200) {
         var body = jsonDecode(response.body);
+
         List<UserModel> userModel = (json.decode(response.body) as List)
             .map((data) => UserModel.fromJson(data))
             .toList();
-        log("$userModel.length.toString()", name: "userModel");
+        log("$userModel", name: "userModel");
+        log("onSearch", name: "search call");
+        checkUserExists(userEmail, userModel).then((value) async {
+          log("$value", name: "value");
 
-        userModel[0];
-        for (var element in body) {
-          UserModel userModel = UserModel(
-            id: element["id"],
-            name: element["name"],
-            username: element["username"],
-            email: element["email"],
-            address: element["address"],
-            phone: element["phone"],
-            website: element["website"],
-            company: element["company"],
+          if (value) {
+            emit(
+              state.copyWith(
+                status: LoginStatus.success,
+              ),
+            );
+            // getIt<SharedPreferencesModel>()
+            //     .setLoginStatus(true); // prefs.setBool("isLoggedIn", true);
+            // getIt<SharedPreferencesModel>().setLoginEmail(userEmail);
+            log("why not ",name: "why not");
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return const UserPostsScreen();
+            }));
+
+          } else {
+            emit(
+              state.copyWith(
+                status: LoginStatus.failure,
+              ),
+            );
+          }
+        }).onError((error, stackTrace) {
+          emit(
+            state.copyWith(
+              status: LoginStatus.failure,
+            ),
           );
-          userList.add(userModel);
-
-          //log("${element.body[0]}");
-          // log("registered list=${element}");
-          //postList.add(PostModel());
-        }
-        emit(
-          state.copyWith(status: LoginStatus.success, userModel: userModel),
-        );
+        });
+        // if(userExist){
+        //   emit(state.copyWith(status: LoginStatus.success,));
+        //    log("state",name: "state");
+        //
+        // }else{
+        //   emit(state.copyWith(status: LoginStatus.success,));
+        //    log("state",name: "state");
+        //
+        // }
+        // for (var element in body) {
+        //   UserModel userModel = UserModel(
+        //     id: element["id"],
+        //     name: element["name"],
+        //     username: element["username"],
+        //     email: element["email"],
+        //     address: element["address"],
+        //     phone: element["phone"],
+        //     website: element["website"],
+        //     company: element["company"],
+        //   );
+        //   userList.add(userModel);
+        // }
+        // emit(
+        //   state.copyWith(status: LoginStatus.success, userModel: userModel),
+        // );
         user = body.toString();
-         login( context,  userEmail);
+        // log("onSearch",name: "search call");
+        // onSearch(userEmail,userModel);
 
         return userList;
       } else {
@@ -108,101 +145,78 @@ class LoginCubit extends Cubit<LoginState> {
     // }
   }
 
-  // , String userPassword
-  void login(BuildContext context, String userEmail) {
-    emit(state.copyWith(status: LoginStatus.loading));
-
-    onSearchEmail(context, userEmail).then((value) async {
-      log("value $value");
-
-      try {
-        // Make API request
-        final response = await http
-            .get(Uri.parse('https://jsonplaceholder.typicode.com/'))
-            .timeout(const Duration(seconds: timeOutDuration));
-
-        if (response.statusCode == 200) {
-          // Update the authentication state
-          emit(state.copyWith(status: LoginStatus.success, userModel: value));
-          log("$state", name: "currentState");
-        } else {
-          // Handle authentication error
-          emit(state.copyWith(
-              status: LoginStatus.loading, str: "Network error"));
-        }
-      } catch (e) {
-        // Handle network or server errors
-        emit(state.copyWith(status: LoginStatus.loading, str: "Network error"));
-      }
-
-      if (userModel.email == userEmail) {
-        emit(state.copyWith(status: LoginStatus.success));
-        getIt<SharedPreferencesModel>().setLoginStatus(true);
-        // prefs.setBool("isLoggedIn", true);
-        getIt<SharedPreferencesModel>().setLoginEmail(userEmail);
-        // prefs.setString("userEmail", userEmail);
-        log(userEmail, name: "userEmail");
-        // BlocProvider.of<RegisteredPostCubit>(context).getAllPost(userEmail);
-
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) {
-          return const UserPostsScreen();
-        }));
-      } else {
-        emit(state.copyWith(status: LoginStatus.failure));
-      }
-    }).onError((error, stackTrace) {
-      emit(state.copyWith(status: LoginStatus.failure));
-    });
-  }
-
-  // Future<UserModel> checkUser(
-  //   context,
-  //   String userEmail,
-  //   String userPassword,
-  // ) async {
-  //   // getIt<AppDatabase>()
-  //   //     .usersTableDao
-  //   //     .loginByEmailPassword(userEmail, userPassword);
-  //   return await getIt<AppDatabase>()
-  //       .usersTableDao
-  //       .loginByEmailPassword(userEmail, userPassword);
+  //search on specific field
+  // Future<List<UserModel>> onSearch(String searchQuery,List<UserModel> userModel) async {
+  //   log(searchQuery, name: "searchQuery");
+  //   List<UserModel> filteredItems = userModel
+  //       .where((item) =>
+  //           item.email!.toLowerCase().contains(searchQuery.toLowerCase()))
+  //       .toList();
+  //   log("$filteredItems", name: "filteredItems");
+  //
+  //   // for (var element in filteredItems) {
+  //   //   log("${element.email}", name: "element");
+  //   //   log("$filteredItems $searchQuery", name: "filteredItems");
+  //   //
+  //   //   UserModel postModel = UserModel(
+  //   //       id: element.id,
+  //   //       name: element.name,
+  //   //       username: element.username,
+  //   //       email: element.email,
+  //   //       address: element.address,
+  //   //       phone: element.phone,
+  //   //       website: element.website,
+  //   //       company: element.company);
+  //   //   resultList.add(postModel);
+  //   // }
+  //   emit(state.copyWith(status: LoginStatus.success, userModel: filteredItems));
+  //   log("$state", name: "state");
+  //   return resultList;
   // }
 
-  Future<List<UserModel>> onSearchEmail(
-    context,
-    String userEmail,
-  ) async {
-    //log(value, name: "value");
-    List<UserModel> filteredUser = userList
-        .where((item) => item
-            .toJson()
-            .toString()
-            .toLowerCase()
-            .contains(userEmail.toLowerCase()))
-        .toList();
+  Future<bool> checkUserExists(String email, List<UserModel> users) async {
+    bool userExists = users.any((user) => user.email == email);
+    log("$userExists", name: "userExists");
 
-    for (var element in filteredUser) {
-      log("${element.email}", name: "email");
+    emit(state.copyWith(status: LoginStatus.success));
 
-      UserModel userModel = UserModel(
-        id: element.id,
-        name: element.name,
-        email: element.email,
-        address: element.address,
-        phone: element.phone,
-        website: element.website,
-        company: element.company,
-      );
-      resultList.add(userModel);
-      log("$userModel.", name: "userModel");
-      log("$resultList.", name: "resultList");
-    }
-    emit(state.copyWith(status: LoginStatus.loading, userModel: filteredUser));
-    log("$state", name: "state");
-    log("$filteredUser", name: "filteredUser");
-    log("$userModel", name: "userModel");
-
-    return resultList;
+    return userExists;
   }
+
+// Future<List<UserModel>> onSearchEmail(
+//   context,
+//   String userEmail,
+// ) async {
+//   //log(value, name: "value");
+//   List<UserModel> filteredUser = userList
+//       .where((item) => item
+//           .toJson()
+//           .toString()
+//           .toLowerCase()
+//           .contains(userEmail.toLowerCase()))
+//       .toList();
+//
+//   for (var element in filteredUser) {
+//     log("${element.email}", name: "email");
+//
+//     UserModel userModel = UserModel(
+//       id: element.id,
+//       name: element.name,
+//       email: element.email,
+//       address: element.address,
+//       phone: element.phone,
+//       website: element.website,
+//       company: element.company,
+//     );
+//     resultList.add(userModel);
+//     log("$userModel.", name: "userModel");
+//     log("$resultList.", name: "resultList");
+//   }
+//   emit(state.copyWith(status: LoginStatus.loading, userModel: filteredUser));
+//   log("$state", name: "state");
+//   log("$filteredUser", name: "filteredUser");
+//   log("$userModel", name: "userModel");
+//
+//   return resultList;
+// }
 }

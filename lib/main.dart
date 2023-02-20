@@ -1,6 +1,6 @@
 import 'package:api_first_app/screens/login_user/cubit/login_cubit.dart';
 import 'package:api_first_app/screens/login_user/login_screen.dart';
-import 'package:api_first_app/screens/posts/post_screen.dart';
+import 'package:api_first_app/screens/user_posts/cubit/user_post_cubit.dart';
 import 'package:api_first_app/users/cubit/user_cubit.dart';
 import 'package:api_first_app/screens/posts/cubit/post_cubit.dart';
 import 'package:flutter/material.dart';
@@ -9,18 +9,16 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'model/shared_preferences_model.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await initDependencyInjection();
   runApp(const MyApp());
 }
 
 Future<void> initDependencyInjection() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  //getIt.registerSingleton<AppDatabase>(AppDatabase());
-  // getIt.registerSingleton<RegisteredPostCubit>(RegisteredPostCubit());
-  getIt.registerSingleton<SharedPreferencesModel>(
-      SharedPreferencesModel(sharedPreferences));
-
-  // getIt.registerSingleton<UsersTableDao>(UsersTableDao());
+  getIt.registerSingleton<SharedPreferencesModel>(SharedPreferencesModel(sharedPreferences));
+  getIt.registerSingleton<LoginCubit>(LoginCubit());
 }
 
 final getIt = GetIt.instance;
@@ -35,6 +33,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<UserCubit>(create: (BuildContext context) => UserCubit()),
         BlocProvider<PostCubit>(create: (BuildContext context) => PostCubit()),
+        BlocProvider<UserPostCubit>(create: (BuildContext context) => UserPostCubit()),
         BlocProvider<LoginCubit>(
             create: (BuildContext context) => LoginCubit()),
       ],
@@ -44,7 +43,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const PostScreen(),
+        home: const LoginScreen(),
       ),
     );
   }

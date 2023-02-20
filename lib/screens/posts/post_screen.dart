@@ -35,7 +35,7 @@ class _PostScreenState extends State<PostScreen> {
                       BlocProvider.of<PostCubit>(context)
                           .onSearch(value),
                   decoration: InputDecoration(
-                      labelText: "Search Post by Title",
+                      labelText: "Search Post ",
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0),
@@ -199,7 +199,7 @@ class _PostScreenState extends State<PostScreen> {
       padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Color(0xffaabbaa),
+          color: const Color(0xffaabbaa),
 
         ),
         child: const Text("No Such Data Exits" , style: TextStyle(fontSize: 15,color: Colors.deepPurpleAccent),)): ListView.builder(
