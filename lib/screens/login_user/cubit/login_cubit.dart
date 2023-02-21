@@ -9,7 +9,8 @@ import '../../../main.dart';
 import '../../../model/shared_preferences_model.dart';
 import '../../../model/user_model.dart';
 import 'package:http/http.dart' as http;
-import '../../user_posts/user_posts_screen.dart';
+import '../../user_comments/cubit/user_comment_cubit.dart';
+import '../../user_comments/user_comments_screen.dart';
 import 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
@@ -46,12 +47,13 @@ class LoginCubit extends Cubit<LoginState> {
                 status: LoginStatus.success,
               ),
             );
-            // getIt<SharedPreferencesModel>()
-            //     .setLoginStatus(true); // prefs.setBool("isLoggedIn", true);
-            // getIt<SharedPreferencesModel>().setLoginEmail(userEmail);
-            log("why not ",name: "why not");
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return const UserPostsScreen();
+            getIt<SharedPreferencesModel>()
+                .setLoginStatus(true); // prefs.setBool("isLoggedIn", true);
+            getIt<SharedPreferencesModel>().setLoginEmail(userEmail);
+           // BlocProvider.of<UserCommentCubit>(context).fetchComments();
+
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+              return const UserCommentsScreen();
             }));
 
           } else {

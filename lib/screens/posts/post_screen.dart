@@ -32,8 +32,7 @@ class _PostScreenState extends State<PostScreen> {
                 padding: const EdgeInsets.only(left: 5.0, right: 5),
                 child: TextField(
                   onChanged: (value) =>
-                      BlocProvider.of<PostCubit>(context)
-                          .onSearch(value),
+                      BlocProvider.of<PostCubit>(context).onSearch(value),
                   decoration: InputDecoration(
                       labelText: "Search Post ",
                       fillColor: Colors.white,
@@ -42,8 +41,8 @@ class _PostScreenState extends State<PostScreen> {
                         borderSide: const BorderSide(),
                       ),
                       prefixIcon: const Icon(Icons.search)
-                    //fillColor: Colors.green
-                  ),
+                      //fillColor: Colors.green
+                      ),
                   keyboardType: TextInputType.text,
                   style: const TextStyle(
                     fontFamily: "Poppins",
@@ -72,9 +71,7 @@ class _PostScreenState extends State<PostScreen> {
 
                     case UserStatus.searchingStatus:
                       return Column(
-                        children: [
-                          buildSearchViewWidget(context,state)
-                        ],
+                        children: [buildSearchViewWidget(context, state)],
                       );
                     case UserStatus.success:
                       //state.users.toString()
@@ -103,7 +100,7 @@ class _PostScreenState extends State<PostScreen> {
                           //     // controller: nameController,
                           //   ),
                           // ),
-                          buildListViewWidget(context,state)
+                          buildListViewWidget(context, state)
                         ],
                       );
 
@@ -193,24 +190,27 @@ class _PostScreenState extends State<PostScreen> {
     );
   }
 
-
   Widget buildSearchViewWidget(BuildContext context, PostState state) {
-    return (state.pModel!.isEmpty)? Container(
-      padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: const Color(0xffaabbaa),
-
-        ),
-        child: const Text("No Such Data Exits" , style: TextStyle(fontSize: 15,color: Colors.deepPurpleAccent),)): ListView.builder(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        physics: const ScrollPhysics(),
-        itemCount:  state.pModel!.length,
-        itemBuilder: (BuildContext context, int index) {
-          var post = state.pModel![index] ;
-          return buildSearchCardWidget(post);
-        });
+    return (state.pModel!.isEmpty)
+        ? Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: const Color(0xffaabbaa),
+            ),
+            child: const Text(
+              "No Such Data Exits",
+              style: TextStyle(fontSize: 15, color: Colors.deepPurpleAccent),
+            ))
+        : ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            physics: const ScrollPhysics(),
+            itemCount: state.pModel!.length,
+            itemBuilder: (BuildContext context, int index) {
+              var post = state.pModel![index];
+              return buildSearchCardWidget(post);
+            });
   }
 
   Widget buildSearchCardWidget(PostModel post) {
@@ -292,14 +292,14 @@ class _PostScreenState extends State<PostScreen> {
     );
   }
 
-  Widget buildListViewWidget(BuildContext context,PostState state) {
+  Widget buildListViewWidget(BuildContext context, PostState state) {
     return ListView.builder(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         physics: const ScrollPhysics(),
         itemCount: state.pModel!.length,
         itemBuilder: (BuildContext context, int index) {
-          var post = BlocProvider.of<PostCubit>(context).postList[index];
+          var post =  BlocProvider.of<PostCubit>(context).postList[index];
           return buildCardWidget(post);
         });
   }

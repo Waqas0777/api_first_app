@@ -5,7 +5,7 @@
 // import '../../../repository/user_repository.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 //
-// import '../../user_posts/user_posts_screen.dart';
+// import '../../user_posts/user_comments_screen.dart';
 // import 'login_state.dart';
 //
 //

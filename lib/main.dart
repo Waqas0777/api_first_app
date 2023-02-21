@@ -1,6 +1,7 @@
 import 'package:api_first_app/screens/login_user/cubit/login_cubit.dart';
-import 'package:api_first_app/screens/login_user/login_screen.dart';
-import 'package:api_first_app/screens/user_posts/cubit/user_post_cubit.dart';
+import 'package:api_first_app/screens/splash/cubit/splash_cubit.dart';
+import 'package:api_first_app/screens/splash/splash_screen.dart';
+import 'package:api_first_app/screens/user_comments/cubit/user_comment_cubit.dart';
 import 'package:api_first_app/users/cubit/user_cubit.dart';
 import 'package:api_first_app/screens/posts/cubit/post_cubit.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,8 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<UserCubit>(create: (BuildContext context) => UserCubit()),
         BlocProvider<PostCubit>(create: (BuildContext context) => PostCubit()),
-        BlocProvider<UserPostCubit>(create: (BuildContext context) => UserPostCubit()),
+        BlocProvider<SplashCubit>(create: (BuildContext context) => SplashCubit()),
+        BlocProvider<UserCommentCubit>(create: (BuildContext context) => UserCommentCubit()),
         BlocProvider<LoginCubit>(
             create: (BuildContext context) => LoginCubit()),
       ],
@@ -43,7 +45,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const LoginScreen(),
+        home: const SplashScreen(),
       ),
     );
   }

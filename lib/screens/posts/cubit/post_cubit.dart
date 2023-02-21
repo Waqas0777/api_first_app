@@ -43,10 +43,6 @@ class PostCubit extends Cubit<PostState> {
               title: element["title"],
               body: element["body"]);
           postList.add(postModel);
-          // log("${element.body[0]}");
-          // log("registered list=${element}");
-          //postList.add(PostModel());
-          //log($postModel.length, name: "body");
         }
         emit(
           state.copyWith(status: UserStatus.success, pModel: postList),
@@ -99,14 +95,15 @@ class PostCubit extends Cubit<PostState> {
     // }
   }
 
-
-
   //search on  model
   Future<List<PostModel>> onSearch(String searchQuery) async {
     //log(value, name: "value");
     List<PostModel> filteredItems = postList
-        .where((item) =>
-        item.toJson().toString().toLowerCase().contains(searchQuery.toLowerCase()))
+        .where((item) => item
+            .toJson()
+            .toString()
+            .toLowerCase()
+            .contains(searchQuery.toLowerCase()))
         .toList();
     for (var element in filteredItems) {
       log("${element.title}", name: "element");
@@ -118,8 +115,8 @@ class PostCubit extends Cubit<PostState> {
           body: element.body);
       resultList.add(postModel);
     }
-    emit(
-        state.copyWith(status: UserStatus.searchingStatus, pModel: filteredItems));
+    emit(state.copyWith(
+        status: UserStatus.searchingStatus, pModel: filteredItems));
     log("$state", name: "state");
     return resultList;
   }
@@ -147,17 +144,6 @@ class PostCubit extends Cubit<PostState> {
 //   log("$state", name: "state");
 //   return resultList;
 // }
-
-
-
-
-
-
-
-
-
-
-
 
 //chat gpt search api https://jsonplaceholder.typicode.com/posts
 // Future<List<PostModel>> fetchSearchResults(String query) async {
