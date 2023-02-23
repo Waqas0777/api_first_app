@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../main.dart';
 import '../../model/post_model.dart';
+import '../../model/shared_preferences_model.dart';
+import '../login_user/login_screen.dart';
 import '../post_detail/post_detail_screen.dart';
 import 'cubit/post_cubit.dart';
 
@@ -16,40 +19,70 @@ class _PostScreenState extends State<PostScreen> {
   @override
   Widget build(BuildContext context) {
     // List<PostModel> filter_list = List.from(BlocProvider.of<PostCubit>(context).postList);
+    String email = getIt<SharedPreferencesModel>().getLoginEmail().toString();
+    int id = getIt<SharedPreferencesModel>().getLoginId("userId").toInt() ;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Getting Posts From Api "),
+        title: const Text("LoggedIn User Post"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return logout();
+                  });
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
               const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Logged In UserEmail : ",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text("$email $id")
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const SizedBox(
                 height: 10,
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 5.0, right: 5),
-                child: TextField(
-                  onChanged: (value) =>
-                      BlocProvider.of<PostCubit>(context).onSearch(value),
-                  decoration: InputDecoration(
-                      labelText: "Search Post ",
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25.0),
-                        borderSide: const BorderSide(),
-                      ),
-                      prefixIcon: const Icon(Icons.search)
-                      //fillColor: Colors.green
-                      ),
-                  keyboardType: TextInputType.text,
-                  style: const TextStyle(
-                    fontFamily: "Poppins",
-                  ),
-                  // controller: nameController,
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.only(left: 5.0, right: 5),
+              //   child: TextField(
+              //     onChanged: (value) =>
+              //         BlocProvider.of<PostCubit>(context).onSearch(value),
+              //     decoration: InputDecoration(
+              //         labelText: "Search Post ",
+              //         fillColor: Colors.white,
+              //         border: OutlineInputBorder(
+              //           borderRadius: BorderRadius.circular(25.0),
+              //           borderSide: const BorderSide(),
+              //         ),
+              //         prefixIcon: const Icon(Icons.search)
+              //         //fillColor: Colors.green
+              //         ),
+              //     keyboardType: TextInputType.text,
+              //     style: const TextStyle(
+              //       fontFamily: "Poppins",
+              //     ),
+              //     // controller: nameController,
+              //   ),
+              // ),
               const SizedBox(
                 height: 10,
               ),
@@ -64,8 +97,9 @@ class _PostScreenState extends State<PostScreen> {
                           color: Colors.blue,
                           onPressed: () {
                             BlocProvider.of<PostCubit>(context).fetchPosts();
+                                // .onSearchById(id);
                           },
-                          child: const Text("Fetch Data"),
+                          child: const Text("Fetch Post"),
                         ),
                       );
 
@@ -111,10 +145,10 @@ class _PostScreenState extends State<PostScreen> {
                             child: CupertinoButton(
                               color: Colors.blue,
                               onPressed: () {
-                                BlocProvider.of<PostCubit>(context)
-                                    .fetchPosts();
+                                BlocProvider.of<PostCubit>(context).fetchPosts();
+                                //.onSearchById(id);
                               },
-                              child: const Text("Fetch Data"),
+                              child: const Text("Fetch Post"),
                             ),
                           ),
                           const SizedBox(
@@ -130,10 +164,10 @@ class _PostScreenState extends State<PostScreen> {
                             child: CupertinoButton(
                               color: Colors.blue,
                               onPressed: () {
-                                BlocProvider.of<PostCubit>(context)
-                                    .fetchPosts();
+                                BlocProvider.of<PostCubit>(context).fetchPosts();
+                                    // .onSearchById(id);
                               },
-                              child: const Text("Fetch Data"),
+                              child: const Text("Fetch Post"),
                             ),
                           ),
                           const SizedBox(
@@ -149,10 +183,11 @@ class _PostScreenState extends State<PostScreen> {
                             child: CupertinoButton(
                               color: Colors.blue,
                               onPressed: () {
-                                BlocProvider.of<PostCubit>(context)
-                                    .fetchPosts();
+                                BlocProvider.of<PostCubit>(context).fetchPosts();
+                                    // .onSearchById(id);
+                                //onSearchById
                               },
-                              child: const Text("Fetch Data"),
+                              child: const Text("Fetch Post"),
                             ),
                           ),
                           const SizedBox(
@@ -168,10 +203,10 @@ class _PostScreenState extends State<PostScreen> {
                             child: CupertinoButton(
                               color: Colors.blue,
                               onPressed: () {
-                                BlocProvider.of<PostCubit>(context)
-                                    .fetchPosts();
+                                BlocProvider.of<PostCubit>(context).fetchPosts();
+                                    // .onSearchById(id);
                               },
-                              child: const Text("Fetch Data"),
+                              child: const Text("Fetch Post"),
                             ),
                           ),
                           const SizedBox(
@@ -191,7 +226,7 @@ class _PostScreenState extends State<PostScreen> {
   }
 
   Widget buildSearchViewWidget(BuildContext context, PostState state) {
-    return (state.pModel!.isEmpty)
+    return (state.postModel!.isEmpty)
         ? Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
@@ -206,9 +241,9 @@ class _PostScreenState extends State<PostScreen> {
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
             physics: const ScrollPhysics(),
-            itemCount: state.pModel!.length,
+            itemCount: state.postModel!.length,
             itemBuilder: (BuildContext context, int index) {
-              var post = state.pModel![index];
+              var post = state.postModel![index];
               return buildSearchCardWidget(post);
             });
   }
@@ -297,7 +332,7 @@ class _PostScreenState extends State<PostScreen> {
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         physics: const ScrollPhysics(),
-        itemCount: state.pModel!.length,
+        itemCount: state.postModel!.length,
         itemBuilder: (BuildContext context, int index) {
           var post =  BlocProvider.of<PostCubit>(context).postList[index];
           return buildCardWidget(post);
@@ -376,6 +411,90 @@ class _PostScreenState extends State<PostScreen> {
                   ],
                 ),
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget logout() {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+      //this right here
+      child: SizedBox(
+        height: 200,
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                "Are You Sure You Want to logout??",
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  InkWell(
+                    onTap: () async {
+                      getIt<SharedPreferencesModel>().setLoginStatus(
+                          false); // prefs.setBool("isLoggedIn", true);
+                      //getIt<SharedPreferencesModel>().setLoginEmail("");
+                      getIt<SharedPreferencesModel>().removeEmail();
+                      getIt<SharedPreferencesModel>().prefs.clear();
+                      // BlocProvider.of<RegisteredPostCubit>(context).c
+                      Navigator.pop(context);
+                      BlocProvider.of<PostCubit>(context).onLogoutClicked();
+                      Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (BuildContext context) {
+                            return const LoginScreen();
+                          }));
+                      //exit(0);
+                    },
+                    child: Container(
+                      width: 100,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.0),
+                        color: Colors.red,
+                      ),
+                      child: const Center(
+                        child: Text(
+                          "Yes",
+                          style: TextStyle(fontSize: 17, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      width: 100,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.0),
+                        color: Colors.green,
+                      ),
+                      child: const Center(
+                        child: Text(
+                          "No",
+                          style: TextStyle(fontSize: 17, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         ),

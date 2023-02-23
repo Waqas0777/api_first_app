@@ -15,7 +15,7 @@ class UserCommentCubit extends Cubit<UserCommentState> {
   var comModel = CommentModel();
   late List<CommentModel> commentList = [];
 
-  // late List<CommentModel> resultList = [];
+  late List<CommentModel> resultList = [];
   late String? user;
   static const int timeOutDuration = 5;
 
@@ -46,7 +46,7 @@ class UserCommentCubit extends Cubit<UserCommentState> {
         }
         emit(
           state.copyWith(
-              status: UserCommentStatus.success, listCommModel: commentList),
+              status: UserCommentStatus.success, comModel: commentList),
         );
         // user = body.toString();
         log("$commentList", name: "commentList");
@@ -97,5 +97,54 @@ class UserCommentCubit extends Cubit<UserCommentState> {
     // }
   }
 
+
+
+  Future<List<CommentModel>> filterCommentsByEmail(String email)async {
+    log("call",name:"call");
+    emit(state.copyWith(status: UserCommentStatus.loading));
+
+    List<CommentModel> filteredComments = commentList.where((comment) => comment.email == email).toList();
+    log("$filteredComments", name: "filteredComments");
+    emit(state.copyWith(
+        status: UserCommentStatus.success, comModel: filteredComments));
+    return  filteredComments;
+
+  }
+
+  //search on specific field
+  Future<List<CommentModel>> onSearch(String searchQuery) async {
+    //log(value, name: "value");
+    List<CommentModel> filteredItems = commentList
+        .where((item) =>
+            item.email!.toLowerCase().contains(searchQuery.toLowerCase()))
+        .toList();
+    for (var element in filteredItems) {
+      log("${element.email}", name: "element");
+      //log("${filteredItems} $searchQuery", name: "filteredItems");
+      CommentModel comModel = CommentModel(
+          postId: element.postId,
+          id: element.id,
+          name: element.name,
+          email: element.email,
+          body: element.body);
+      resultList.add(comModel);
+    }
+    emit(state.copyWith(
+        status: UserCommentStatus.success, comModel: filteredItems));
+    log("$state", name: "state");
+    return resultList;
+  }
+
+
+// Future<void> fetchCommentsByEmail(String email) async {
+//   final response = await http.get(Uri.parse('https://jsonplaceholder.typicode.com/comments?email=$email'));
+//   if (response.statusCode == 200) {
+//     final List<dynamic> data = jsonDecode(response.body);
+//     final List<Comment> comments = data.map((comment) => Comment.fromJson(comment)).toList();
+//     emit(CommentsLoaded(comments));
+//   } else {
+//     // Handle errors here
+//   }
+// }
 
 }

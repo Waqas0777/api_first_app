@@ -4,9 +4,12 @@ import 'dart:io';
 import 'dart:developer';
 
 import 'package:api_first_app/model/post_model.dart';
+import 'package:api_first_app/model/shared_preferences_model.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
+
+import '../../../main.dart';
 
 part 'post_state.dart';
 
@@ -36,6 +39,7 @@ class PostCubit extends Cubit<PostState> {
         log(postModel.length.toString());
 
         postModel[0];
+        postList.clear();
         for (var element in body) {
           PostModel postModel = PostModel(
               userId: element["userId"],
@@ -44,10 +48,32 @@ class PostCubit extends Cubit<PostState> {
               body: element["body"]);
           postList.add(postModel);
         }
+
+        log(postModel.length.toString(), name: "postModel");
+
+        onSearchById(
+                getIt<SharedPreferencesModel>().getLoginId("userId").toInt())
+            .then((value) => {
+                  if (value.isNotEmpty)
+                    {
+                      emit(
+                        state.copyWith(
+                            status: UserStatus.success, listPostModel: value),
+                      )
+                    }
+                  else
+                    {
+                      emit(
+                        state.copyWith(status: UserStatus.failure),
+                      )
+                    }
+                });
+
         emit(
-          state.copyWith(status: UserStatus.success, pModel: postList),
+          state.copyWith(status: UserStatus.success, listPostModel: postList),
         );
-        user = body.toString();
+
+        //user = body.toString();
         return postList;
       } else {
         emit(
@@ -95,6 +121,58 @@ class PostCubit extends Cubit<PostState> {
     // }
   }
 
+// search on specific field id
+  Future<List<PostModel>> onSearchById(int id) async {
+    //log(value, name: "value");
+    try {
+      List<PostModel> filteredItems =
+          postList.where((item) => item.userId == id).toList();
+      log("${filteredItems.length} ", name: "filteredItems");
+      log("${postList.length} ", name: "postList");
+
+      for (var element in filteredItems) {
+        log("${element.title}", name: "element");
+        //log("${filteredItems} $searchQuery", name: "filteredItems");
+        PostModel postModel = PostModel(
+            userId: element.userId,
+            id: element.id,
+            title: element.title,
+            body: element.body);
+        resultList.add(postModel);
+      }
+      emit(state.copyWith(
+          status: UserStatus.success, listPostModel: filteredItems));
+      log("$state", name: "state");
+      return resultList;
+    } on SocketException {
+      emit(
+        state.copyWith(
+          status: UserStatus.socketStatus,
+        ),
+      );
+      // Handle socket exception
+      return Future.error("No Internet Connection");
+    } on TimeoutException {
+      emit(
+        state.copyWith(
+          status: UserStatus.timeoutStatus,
+        ),
+      );
+      // Handle timeout exception
+      return Future.error("Request Timeout Exception");
+    } on http.ClientException {
+      emit(
+        state.copyWith(
+          status: UserStatus.userStatus,
+        ),
+      );
+      // Handle client/server exception
+      return Future.error("App Crashed due to some user mobile");
+    } catch (e) {
+      return Future.error("Something Went Wrong");
+    }
+  }
+
   //search on  model
   Future<List<PostModel>> onSearch(String searchQuery) async {
     //log(value, name: "value");
@@ -116,9 +194,20 @@ class PostCubit extends Cubit<PostState> {
       resultList.add(postModel);
     }
     emit(state.copyWith(
-        status: UserStatus.searchingStatus, pModel: filteredItems));
+        status: UserStatus.searchingStatus, listPostModel: filteredItems));
     log("$state", name: "state");
     return resultList;
+  }
+
+  onLogoutClicked() {
+    postList.clear();
+    resultList.clear();
+    getIt<SharedPreferencesModel>().setLoginId(0);
+    emit(
+      state.copyWith(
+        status: UserStatus.initial,
+      ),
+    );
   }
 }
 

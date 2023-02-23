@@ -45,8 +45,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 color: Colors.blue,
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    BlocProvider.of<LoginCubit>(context).fetchUsers(
-                        context, userEmailController.text.toString());
+                    BlocProvider.of<LoginCubit>(context).
+                    fetchUsers(context, userEmailController.text.toString());
                   }
                 },
                 child: const Text("Login"),

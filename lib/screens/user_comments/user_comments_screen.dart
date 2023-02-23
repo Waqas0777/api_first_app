@@ -66,7 +66,14 @@ class _UserCommentsScreenState extends State<UserCommentsScreen> {
                 ),
                 BlocBuilder<UserCommentCubit, UserCommentState>(
                   builder: (context, state) {
+
                     switch (state.status) {
+
+
+                      // case UserCommentStatus.searchingStatus:
+                      //   return Column(
+                      //     children: [buildSearchViewWidget(context, state)],
+                      //   );
                       case UserCommentStatus.loading:
                         return const Center(child: CircularProgressIndicator());
                       case UserCommentStatus.initial:
@@ -74,8 +81,9 @@ class _UserCommentsScreenState extends State<UserCommentsScreen> {
                           child: CupertinoButton(
                             color: Colors.blue,
                             onPressed: () {
-                              BlocProvider.of<UserCommentCubit>(context)
-                                  .fetchComments();
+                              BlocProvider.of<UserCommentCubit>(context).filterCommentsByEmail(email.toString());
+
+                                  // .fetchComments();
                             },
                             child: const Text("Fetch Comments"),
                           ),
@@ -147,7 +155,7 @@ class _UserCommentsScreenState extends State<UserCommentsScreen> {
                                 color: Colors.blue,
                                 onPressed: () {
                                   BlocProvider.of<UserCommentCubit>(context)
-                                      .fetchComments();
+                                      .filterCommentsByEmail(email.toString());
                                 },
                                 child: const Text("Fetch Comments"),
                               ),
@@ -254,7 +262,7 @@ class _UserCommentsScreenState extends State<UserCommentsScreen> {
                     // Text(employee.id.toString()),
                     Row(
                       children: [
-                        const Text("User ID : "),
+                        const Text(" ID : "),
                         Text(commModel.id.toString()),
                       ],
                     ),
@@ -284,7 +292,7 @@ class _UserCommentsScreenState extends State<UserCommentsScreen> {
                     Row(
                       children: [
                         const Text("Name : "),
-                        Text(commModel.name.toString()),
+                        Expanded(child: Text(commModel.name.toString())),
                       ],
                     ),
                     const SizedBox(
@@ -293,7 +301,7 @@ class _UserCommentsScreenState extends State<UserCommentsScreen> {
                     Row(
                       children: [
                         const Text("Comment Body : "),
-                        Text(commModel.body.toString()),
+                        Expanded(child: Text(commModel.body.toString())),
                       ],
                     ),
                   ],
@@ -306,25 +314,117 @@ class _UserCommentsScreenState extends State<UserCommentsScreen> {
     );
   }
 
-  // Widget buildSearchViewWidget(BuildContext context, UserCommentState state) {
-  //   return (state.comModel!.isEmpty)? Container(
-  //       padding: const EdgeInsets.all(10),
-  //       decoration: BoxDecoration(
-  //         borderRadius: BorderRadius.circular(10),
-  //         color: const Color(0xffaabbaa),
-  //
-  //       ),
-  //       child: const Text("No Such Data Exits" , style: TextStyle(fontSize: 15,color: Colors.deepPurpleAccent),)): ListView.builder(
-  //       scrollDirection: Axis.vertical,
-  //       shrinkWrap: true,
-  //       physics: const ScrollPhysics(),
-  //       itemCount:  state.comModel!.length,
-  //       itemBuilder: (BuildContext context, int index) {
-  //         var post = state.comModel![index] ;
-  //         return buildSearchCardWidget(post);
-  //       });
-  // }
 
+  Widget buildSearchViewWidget(BuildContext context, UserCommentState state) {
+    return (state.comModel!.isEmpty)
+        ? Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: const Color(0xffaabbaa),
+        ),
+        child: const Text(
+          "No Such Data Exits",
+          style: TextStyle(fontSize: 15, color: Colors.deepPurpleAccent),
+        ))
+        : ListView.builder(
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        physics: const ScrollPhysics(),
+        itemCount: state.comModel!.length,
+        itemBuilder: (BuildContext context, int index) {
+          var post = state.comModel![index];
+          return buildSearchCardWidget(post);
+        });
+  }
+
+  Widget buildSearchCardWidget(CommentModel cModel) {
+    return InkWell(
+      onTap: () {
+        // Navigator.push(context, MaterialPageRoute(builder: (context) {
+        //   return PostDetailScreen(
+        //     id: post.id!,
+        //     model: post,
+        //   );
+        // }));
+      },
+      child: Card(
+        shape: const RoundedRectangleBorder(
+          side: BorderSide(
+            color: Colors.green,
+            style: BorderStyle.solid,
+            width: 1.2,
+          ),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16), bottomRight: Radius.circular(16)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    // Text(employee.id.toString()),
+                    Row(
+                      children: [
+                        const Text(" ID : "),
+                        Text(cModel.id.toString()),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        const Text("Post Id : "),
+                        Text(cModel.postId.toString()),
+                        // Text(snapshot.data![index].id.toString()),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        const Text("Name : "),
+                        Expanded(child: Text(cModel.name.toString())),
+                      ],
+                    ),
+
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        const Text("Email : "),
+                        Expanded(child: Text(cModel.email.toString())),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        const Text("Body : "),
+                        Expanded(child: Text(cModel.body.toString())),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
   Widget logout() {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
@@ -361,8 +461,8 @@ class _UserCommentsScreenState extends State<UserCommentsScreen> {
                       Navigator.pop(context);
                       Navigator.of(context).pushReplacement(
                           MaterialPageRoute(builder: (BuildContext context) {
-                        return const LoginScreen();
-                      }));
+                            return const LoginScreen();
+                          }));
                       //exit(0);
                     },
                     child: Container(
@@ -407,4 +507,5 @@ class _UserCommentsScreenState extends State<UserCommentsScreen> {
       ),
     );
   }
+
 }

@@ -1,7 +1,7 @@
 part of 'user_comment_cubit.dart';
 
 enum UserCommentStatus {
-  // searchingStatus,
+   // searchingStatus,
   initial,
   loading,
   success,
@@ -25,7 +25,7 @@ class UserCommentState extends Equatable {
 
   UserCommentState copyWith({
     UserCommentStatus? status,
-    List<CommentModel>? listCommModel,
+    List<CommentModel>? comModel,
     Exception? exception,
   }) {
     return UserCommentState(

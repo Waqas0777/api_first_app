@@ -13,24 +13,24 @@ enum UserStatus {
 
 class PostState extends Equatable {
   final UserStatus status;
-  final List<PostModel>? pModel;
+  final List<PostModel>? postModel;
   final Exception? exception;
 
   const PostState(
-      {this.status = UserStatus.initial, this.pModel, this.exception});
+      {this.status = UserStatus.initial, this.postModel, this.exception});
 
   @override
   // TODO: implement props
-  List<Object?> get props => [status, pModel, exception];
+  List<Object?> get props => [status, postModel, exception];
 
   PostState copyWith({
     UserStatus? status,
-    List<PostModel>? pModel,
+    List<PostModel>? listPostModel,
     Exception? exception,
   }) {
     return PostState(
       status: status ?? this.status,
-      pModel: pModel ?? pModel,
+      postModel: listPostModel ?? listPostModel,
       exception: exception ?? this.exception,
     );
   }
