@@ -2,6 +2,8 @@ import 'package:api_first_app/screens/login_user/cubit/login_cubit.dart';
 import 'package:api_first_app/screens/splash/cubit/splash_cubit.dart';
 import 'package:api_first_app/screens/splash/splash_screen.dart';
 import 'package:api_first_app/screens/user_comments/cubit/user_comment_cubit.dart';
+import 'package:api_first_app/screens/user_posts/cubit/user_posts_cubit.dart';
+import 'package:api_first_app/screens/user_todos/cubit/user_todos_cubit.dart';
 import 'package:api_first_app/users/cubit/user_cubit.dart';
 import 'package:api_first_app/screens/posts/cubit/post_cubit.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,8 @@ Future<void> initDependencyInjection() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   getIt.registerSingleton<SharedPreferencesModel>(SharedPreferencesModel(sharedPreferences));
   getIt.registerSingleton<LoginCubit>(LoginCubit());
+  getIt.registerSingleton<UserPostsCubit>(UserPostsCubit());
+  getIt.registerSingleton<UserTodosCubit>(UserTodosCubit());
 }
 
 final getIt = GetIt.instance;
@@ -35,6 +39,8 @@ class MyApp extends StatelessWidget {
         BlocProvider<UserCubit>(create: (BuildContext context) => UserCubit()),
         BlocProvider<PostCubit>(create: (BuildContext context) => PostCubit()),
         BlocProvider<SplashCubit>(create: (BuildContext context) => SplashCubit()),
+        BlocProvider<UserPostsCubit>(create: (BuildContext context) => UserPostsCubit()),
+        BlocProvider<UserTodosCubit>(create: (BuildContext context) => UserTodosCubit()),
         BlocProvider<UserCommentCubit>(create: (BuildContext context) => UserCommentCubit()),
         BlocProvider<LoginCubit>(
             create: (BuildContext context) => LoginCubit()),

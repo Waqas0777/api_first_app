@@ -1,9 +1,12 @@
 import 'package:api_first_app/model/post_model.dart';
 import 'package:flutter/material.dart';
 
+import '../../model/todos_model.dart';
+
 class PostDetailScreen extends StatefulWidget {
   final int id;
-  final PostModel model;
+  final TodosModel model;
+  // final PostModel model;
 
   const PostDetailScreen({
     required this.id,
@@ -67,11 +70,11 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               ),
               Row(
                 children: [
-                  const Text("Post Description : "),
+                  const Text("Completed : "),
                   const SizedBox(
                     width: 15,
                   ),
-                  Expanded(child: Text(widget.model.body.toString())),
+                  Expanded(child: Text(widget.model.completed.toString())),
                 ],
               ),
               const SizedBox(

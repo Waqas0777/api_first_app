@@ -137,7 +137,13 @@ class LoginCubit extends Cubit<LoginState> {
           .setLoginStatus(true); // prefs.setBool("isLoggedIn", true);
       getIt<SharedPreferencesModel>().setLoginEmail(userEmail);
       getIt<SharedPreferencesModel>().setLoginId(userModel.id!.toInt());
+
+      String userModelData = jsonEncode(userModel);
+      getIt<SharedPreferencesModel>().setUser(userModelData);
+
       log("${userModel.email}", name: "email");
+      log(userModelData, name: "userModelData");
+
 
       return true;
     }

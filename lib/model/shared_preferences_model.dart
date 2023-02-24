@@ -44,6 +44,13 @@ class SharedPreferencesModel {
   String getUserName() {
     return prefs.getString("userName") ?? "";
   }
+  void setUser(String user){
+    prefs.setString("user", user);
+  }
+  String getUser(String model){
+    return prefs.getString(model)??"";
+  }
+
 
 // Stream<List<PostTableData>> postList(){
 //
