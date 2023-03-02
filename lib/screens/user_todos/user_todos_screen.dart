@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../main.dart';
 import '../../model/shared_preferences_model.dart';
 import '../../model/todos_model.dart';
@@ -42,22 +40,25 @@ class _UserTodosScreenState extends State<UserTodosScreen> {
                   builder: (context, state) {
                     switch (state.status) {
                       case UserTodosStatus.loading:
-                        return const Center(child: CircularProgressIndicator());
+                        return const Center(
+                            child: CircularProgressIndicator());
                       case UserTodosStatus.initial:
-                        return Center(
-                          child: CupertinoButton(
-                            color: Colors.blue,
-                            onPressed: () {
-                              BlocProvider.of<UserTodosCubit>(context)
-                                  .fetchTodosById(id);
-                              // .onSearchById(id);
-                              // Navigator.push(context, MaterialPageRoute(builder: (context){
-                              //   return const UserPostsScreen();
-                              // }));
-                            },
-                            child: const Text("Fetch Todos"),
-                          ),
-                        );
+                        return const Center(
+                            // child: CupertinoButton(
+                            //   color: Colors.blue,
+                            //   onPressed: () {
+                            //     BlocProvider.of<UserTodosCubit>(context)
+                            //         .fetchTodosById(id);
+                            //     // .fetchAndInsertTodos(id);
+                            //     // .fetchTodosById(id);
+                            //     // .onSearchById(id);
+                            //     // Navigator.push(context, MaterialPageRoute(builder: (context){
+                            //     //   return const UserPostsScreen();
+                            //     // }));
+                            //   },
+                            //   child: const Text("Fetch Todos"),
+                            // ),
+                            );
 
                       // case UserTodosStatus.searchingStatus:
                       //   return Column(
@@ -97,86 +98,100 @@ class _UserTodosScreenState extends State<UserTodosScreen> {
                       case UserTodosStatus.failure:
                         return Column(
                           children: [
-                            Center(
-                              child: CupertinoButton(
-                                color: Colors.blue,
-                                onPressed: () {
-                                  BlocProvider.of<UserTodosCubit>(context)
-                                      .fetchTodosById(id);
-                                  // .fetchPostsById(id);
-                                  //.onSearchById(id);
-                                },
-                                child: const Text("Fetch Post"),
-                              ),
-                            ),
+                            // Center(
+                            //   child: CupertinoButton(
+                            //     color: Colors.blue,
+                            //     onPressed: () {
+                            //       BlocProvider.of<UserTodosCubit>(context)
+                            //           .getTodos(id);
+                            //           // .fetchAndInsertTodos(id);
+                            //           // .fetchTodosById(id);
+                            //       // .fetchPostsById(id);
+                            //       //.onSearchById(id);
+                            //     },
+                            //     child: const Text("Fetch Post"),
+                            //   ),
+                            // ),
                             const SizedBox(
                               height: 10,
                             ),
-                            const Center(child: Text("Something went wrong"))
+                            Center(
+                              child: Text(state.str!),
+                            ),
                           ],
                         );
                       case UserTodosStatus.socketStatus:
                         return Column(
-                          children: [
-                            Center(
-                              child: CupertinoButton(
-                                color: Colors.blue,
-                                onPressed: () {
-                                  BlocProvider.of<UserTodosCubit>(context)
-                                      .fetchTodosById(id);
-                                  // .fetchPostsById(id);
-                                  // .onSearchById(id);
-                                },
-                                child: const Text("Fetch Post"),
-                              ),
-                            ),
-                            const SizedBox(
+                          children: const [
+                            // Center(
+                            //   child: CupertinoButton(
+                            //     color: Colors.blue,
+                            //     onPressed: () {
+                            //       BlocProvider.of<UserTodosCubit>(context)
+                            //           .fetchTodosById(id);
+                            //       // .fetchPostsById(id);
+                            //       // .onSearchById(id);
+                            //     },
+                            //     child: const Text("Fetch Post"),
+                            //   ),
+                            // ),
+                            SizedBox(
                               height: 10,
                             ),
-                            const Center(child: Text("No Internet Connection"))
+                            Center(
+                              child: Text("No Internet Connection"),
+                            ),
                           ],
                         );
                       case UserTodosStatus.timeoutStatus:
                         return Column(
-                          children: [
-                            Center(
-                              child: CupertinoButton(
-                                color: Colors.blue,
-                                onPressed: () {
-                                  BlocProvider.of<UserTodosCubit>(context)
-                                      .fetchTodosById(id);
-                                  //.fetchPostsById(id);
-                                  // .onSearchById(id);
-                                  //onSearchById
-                                },
-                                child: const Text("Fetch Post"),
-                              ),
-                            ),
-                            const SizedBox(
+                          children: const [
+                            // Center(
+                            //   child: CupertinoButton(
+                            //     color: Colors.blue,
+                            //     onPressed: () {
+                            //       BlocProvider.of<UserTodosCubit>(context)
+                            //           .getTodos(id);
+                            //       // .fetchAndInsertTodos(id);
+                            //       // .fetchTodosById(id);
+                            //       //.fetchPostsById(id);
+                            //       // .onSearchById(id);
+                            //       //onSearchById
+                            //     },
+                            //     child: const Text("Fetch Post"),
+                            //   ),
+                            // ),
+                            SizedBox(
                               height: 10,
                             ),
-                            const Center(child: Text("Request Timeout Exception"))
+                            Center(
+                              child: Text("Request Timeout Exception"),
+                            ),
                           ],
                         );
                       case UserTodosStatus.userStatus:
                         return Column(
-                          children: [
-                            Center(
-                              child: CupertinoButton(
-                                color: Colors.blue,
-                                onPressed: () {
-                                  BlocProvider.of<UserTodosCubit>(context)
-                                      .fetchTodosById(id);
-                                  // .fetchPostsById(id);
-                                  // .onSearchById(id);
-                                },
-                                child: const Text("Fetch Post"),
-                              ),
-                            ),
-                            const SizedBox(
+                          children: const [
+                            // Center(
+                            //   child: CupertinoButton(
+                            //     color: Colors.blue,
+                            //     onPressed: () {
+                            //       BlocProvider.of<UserTodosCubit>(context)
+                            //           .getTodos(id);
+                            //       // .fetchAndInsertTodos(id);
+                            //       // .fetchTodosById(id);
+                            //       // .fetchPostsById(id);
+                            //       // .onSearchById(id);
+                            //     },
+                            //     child: const Text("Fetch Post"),
+                            //   ),
+                            // ),
+                            SizedBox(
                               height: 10,
                             ),
-                            const Center(child: Text("User Mobile Issue"))
+                            Center(
+                              child: Text("User Mobile Issue"),
+                            ),
                           ],
                         );
                     }

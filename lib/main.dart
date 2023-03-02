@@ -1,3 +1,4 @@
+import 'package:api_first_app/database/daos/user_todo_table_dao.dart';
 import 'package:api_first_app/screens/login_user/cubit/login_cubit.dart';
 import 'package:api_first_app/screens/splash/cubit/splash_cubit.dart';
 import 'package:api_first_app/screens/splash/splash_screen.dart';
@@ -10,12 +11,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'database/db/app_database.dart';
 import 'model/shared_preferences_model.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await initDependencyInjection();
-  runApp(const MyApp());
+  runApp( MyApp());
 }
 
 Future<void> initDependencyInjection() async {
@@ -24,12 +26,15 @@ Future<void> initDependencyInjection() async {
   getIt.registerSingleton<LoginCubit>(LoginCubit());
   getIt.registerSingleton<UserPostsCubit>(UserPostsCubit());
   getIt.registerSingleton<UserTodosCubit>(UserTodosCubit());
+  getIt.registerSingleton<AppDatabase>(AppDatabase());
+
 }
 
 final getIt = GetIt.instance;
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+   MyApp({super.key});
+  int id = getIt<SharedPreferencesModel>().getLoginId("userId").toInt();
 
   // This widget is the root of your application.
   @override
@@ -40,7 +45,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<PostCubit>(create: (BuildContext context) => PostCubit()),
         BlocProvider<SplashCubit>(create: (BuildContext context) => SplashCubit()),
         BlocProvider<UserPostsCubit>(create: (BuildContext context) => UserPostsCubit()),
-        BlocProvider<UserTodosCubit>(create: (BuildContext context) => UserTodosCubit()),
+       BlocProvider<UserTodosCubit>(create: (BuildContext context) => UserTodosCubit()..getAllTodos(id)),
         BlocProvider<UserCommentCubit>(create: (BuildContext context) => UserCommentCubit()),
         BlocProvider<LoginCubit>(
             create: (BuildContext context) => LoginCubit()),

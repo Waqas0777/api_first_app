@@ -13,6 +13,16 @@ class SharedPreferencesModel {
     return prefs.getBool("loginStatus") ?? false;
   }
 
+  //api calling
+  // void setTodoApiCallStatus(bool value) {
+  //   prefs.setBool("apiCallStatus", value);
+  // }
+  // bool getTodoApiCallStatus() {
+  //   return prefs.getBool("apiCallStatus") ?? false;
+  // }
+  //
+
+
   void setLoginEmail(String value) {
     prefs.setString("loginEmail", value);
   }

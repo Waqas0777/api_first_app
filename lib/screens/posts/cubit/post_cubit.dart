@@ -35,7 +35,7 @@ class PostCubit extends Cubit<PostState> {
     try {
       final response = await http
           .get(Uri.parse(
-              'https://jsonplaceholder.typicode.com/users/'"$id"'/posts'))
+              'https://jsonplaceholder.typicode.com/users/' "$id" '/posts'))
           .timeout(const Duration(seconds: timeOutDuration));
       if (response.statusCode == 200) {
         var body = jsonDecode(response.body);
@@ -104,7 +104,8 @@ class PostCubit extends Cubit<PostState> {
     emit(state.copyWith(status: UserStatus.loading));
     try {
       final response = await http
-          .get(Uri.parse('https://jsonplaceholder.typicode.com/users/'"$id"'/todos'))
+          .get(Uri.parse(
+              'https://jsonplaceholder.typicode.com/users/' "$id" '/todos'))
           .timeout(const Duration(seconds: timeOutDuration));
       if (response.statusCode == 200) {
         var body = jsonDecode(response.body);
@@ -167,7 +168,6 @@ class PostCubit extends Cubit<PostState> {
       return Future.error("No Internet Connection");
     }
   }
-
 
   //fetching all posts
   Future<List<PostModel>> fetchPosts() async {

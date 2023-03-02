@@ -45,10 +45,17 @@ dependencies:
   get_it: ^7.2.0
   mixins: ^0.0.11
   path: ^1.8.2
+  fluttertoast: ^8.1.2
   shared_preferences: ^2.0.15
   email_validator: '^2.1.16'
+  sqlite3_flutter_libs: ^0.5.12
+  flutter_slidable: ^2.0.0
+  drift: ^2.4.2
+
 
 dev_dependencies:
+  drift_dev: ^2.4.0
+  build_runner: ^2.3.3
   flutter_test:
     sdk: flutter
 

@@ -1,10 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-
 import '../../../model/post_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,6 +15,7 @@ class UserPostsCubit extends Cubit<UserPostsState> {
   late List<PostModel> resultList = [];
   late String? user;
   static const int timeOutDuration = 5;
+
   // Define a method to handle the back press
   void handleBackPress() {
     // Emit the initial state
@@ -26,6 +25,7 @@ class UserPostsCubit extends Cubit<UserPostsState> {
       ),
     );
   }
+
   Future<List<PostModel>> fetchPostsById(int id) async {
     emit(state.copyWith(status: UserPostsStatus.loading));
     try {
