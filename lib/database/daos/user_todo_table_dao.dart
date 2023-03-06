@@ -1,12 +1,10 @@
 import 'dart:developer';
-
 import 'package:api_first_app/model/todos_model.dart';
 import 'package:drift/drift.dart';
 import '../db/app_database.dart';
 import '../tables/user_post_table.dart';
 import '../tables/user_todo_table.dart';
 import 'package:drift/drift.dart' as drift;
-
 part 'user_todo_table_dao.g.dart';
 
 @DriftAccessor(tables: [UserPostTable, UserTodoTable])
@@ -21,11 +19,13 @@ class UserTodoTableDao extends DatabaseAccessor<AppDatabase>
   }
   //Future<int> insertTodoEntry(UserTodoTableCompanion entry) => into(userTodoTable).insert(entry);
   Future<List<UserTodoTableData>> getAllTodos() => select(userTodoTable).get();
-  Stream<List<UserTodoTableData>> getAllTodosByUserId(userId) {
-    log(userId, name: "userId");
+
+  Stream<List<UserTodoTableData>> getAllTodosByUserId(int userId) {
+    log("$userId", name: "userIdd");
     return (select(userTodoTable)..where((tbl) => tbl.userId.equals(userId)))
         .watch();
   }
+
   Future<void> insertTodos(List<TodosModel> todos) async {
     log("$todos", name: "todosss");
     // await batch((batch) {

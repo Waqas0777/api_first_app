@@ -1,3 +1,4 @@
+import 'package:api_first_app/database/db/app_database.dart';
 import 'package:api_first_app/model/post_model.dart';
 import 'package:api_first_app/screens/user_posts/cubit/user_posts_cubit.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,31 +17,24 @@ class UserPostsScreen extends StatefulWidget {
 class _UserPostsScreenState extends State<UserPostsScreen> {
   int id = getIt<SharedPreferencesModel>().getLoginId("userId").toInt();
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<UserPostsCubit, UserPostsState>(
-      listener: (context, state) {
-        // TODO: implement listener
+    return WillPopScope(
+      onWillPop: () async {
+        // call the handleBackPress method in your cubit
+        BlocProvider.of<UserPostsCubit>(context).handleBackPress();
+        Navigator.pop(context);
+        // return false to prevent the default pop operation
+        return false;
       },
-      child: WillPopScope(
-        onWillPop: () async {
-          // call the handleBackPress method in your cubit
-          BlocProvider.of<UserPostsCubit>(context).handleBackPress();
-          Navigator.pop(context);
-          // return false to prevent the default pop operation
-          return false;
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text("User Posts Screen"),
-          ),
-          body: SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("User Posts Screen"),
+        ),
+        body: SafeArea(
+          child: BlocProvider(
+            create: (context) => UserPostsCubit()..getAllPostsById(id),
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -70,12 +64,12 @@ class _UserPostsScreenState extends State<UserPostsScreen> {
                             // ),
                           );
 
-                        // case UserPostsStatus.searchingStatus:
-                        //   return Column(
-                        //     //children: [buildSearchViewWidget(context, state)],
-                        //   );
+                      // case UserPostsStatus.searchingStatus:
+                      //   return Column(
+                      //     //children: [buildSearchViewWidget(context, state)],
+                      //   );
                         case UserPostsStatus.success:
-                          //state.users.toString()
+                        //state.users.toString()
                           return Column(
                             children: [
                               // Padding(
@@ -122,7 +116,8 @@ class _UserPostsScreenState extends State<UserPostsScreen> {
                               const SizedBox(
                                 height: 10,
                               ),
-                              const Center(child: Text("Something went wrong"))
+                              const Center(
+                                  child: Text("Something went wrong"))
                             ],
                           );
                         case UserPostsStatus.socketStatus:
@@ -206,14 +201,16 @@ class _UserPostsScreenState extends State<UserPostsScreen> {
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         physics: const ScrollPhysics(),
-        itemCount: state.postModel!.length,
+        itemCount: state.userPostTableDataList!.length,
         itemBuilder: (BuildContext context, int index) {
-          var post = BlocProvider.of<UserPostsCubit>(context).postList[index];
+          var post = BlocProvider
+              .of<UserPostsCubit>(context).userPostTableData[index];
+              // .postList[index];
           return buildCardWidget(post);
         });
   }
 
-  Widget buildCardWidget(PostModel post) {
+  Widget buildCardWidget(UserPostTableData post) {
     return InkWell(
       onTap: () {
         // Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -255,8 +252,8 @@ class _UserPostsScreenState extends State<UserPostsScreen> {
                     ),
                     Row(
                       children: [
-                        const Text("Id : "),
-                        Text(post.id.toString()),
+                        const Text("Post Id : "),
+                        Text(post.postId.toString()),
                         // Text(snapshot.data![index].id.toString()),
                       ],
                     ),
@@ -266,7 +263,7 @@ class _UserPostsScreenState extends State<UserPostsScreen> {
                     Row(
                       children: [
                         const Text("Post Title : "),
-                        Expanded(child: Text(post.title.toString())),
+                        Expanded(child: Text(post.postTitle.toString())),
                       ],
                     ),
 
@@ -276,7 +273,7 @@ class _UserPostsScreenState extends State<UserPostsScreen> {
                     Row(
                       children: [
                         const Text("Post Body : "),
-                        Expanded(child: Text(post.body.toString())),
+                        Expanded(child: Text(post.postBody.toString())),
                       ],
                     ),
                     const SizedBox(

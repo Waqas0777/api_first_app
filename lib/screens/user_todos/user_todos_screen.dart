@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:api_first_app/database/db/app_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../main.dart';
@@ -30,20 +33,22 @@ class _UserTodosScreenState extends State<UserTodosScreen> {
           title: const Text("User Todos Screen"),
         ),
         body: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 10,
-                ),
-                BlocBuilder<UserTodosCubit, UserTodosState>(
-                  builder: (context, state) {
-                    switch (state.status) {
-                      case UserTodosStatus.loading:
-                        return const Center(
-                            child: CircularProgressIndicator());
-                      case UserTodosStatus.initial:
-                        return const Center(
+          child: BlocProvider(
+            create: (context) => UserTodosCubit()..getAllTodosById(id),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  BlocBuilder<UserTodosCubit, UserTodosState>(
+                    builder: (context, state) {
+                      switch (state.status) {
+                        case UserTodosStatus.loading:
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        case UserTodosStatus.initial:
+                          return const Center(
                             // child: CupertinoButton(
                             //   color: Colors.blue,
                             //   onPressed: () {
@@ -58,146 +63,150 @@ class _UserTodosScreenState extends State<UserTodosScreen> {
                             //   },
                             //   child: const Text("Fetch Todos"),
                             // ),
-                            );
+                          );
 
                       // case UserTodosStatus.searchingStatus:
                       //   return Column(
                       //     //children: [buildSearchViewWidget(context, state)],
                       //   );
-                      case UserTodosStatus.success:
+                        case UserTodosStatus.success:
                         //state.users.toString()
-                        return Column(
-                          children: [
-                            // Padding(
-                            //   padding: const EdgeInsets.only(left: 5.0, right: 5),
-                            //   child: TextField(
-                            //     onChanged: (value) =>
-                            //         BlocProvider.of<PostCubit>(context)
-                            //             .onSearch(value),
-                            //     decoration: InputDecoration(
-                            //         labelText: "Search Post by Title",
-                            //         fillColor: Colors.white,
-                            //         border: OutlineInputBorder(
-                            //           borderRadius: BorderRadius.circular(25.0),
-                            //           borderSide: const BorderSide(),
-                            //         ),
-                            //         prefixIcon: const Icon(Icons.search)
-                            //         //fillColor: Colors.green
-                            //         ),
-                            //     keyboardType: TextInputType.text,
-                            //     style: const TextStyle(
-                            //       fontFamily: "Poppins",
-                            //     ),
-                            //     // controller: nameController,
-                            //   ),
-                            // ),
-                            buildListTodosViewWidget(context, state)
-                          ],
-                        );
+                          log("success",name:"success");
+                          return Column(
 
-                      case UserTodosStatus.failure:
-                        return Column(
-                          children: [
-                            // Center(
-                            //   child: CupertinoButton(
-                            //     color: Colors.blue,
-                            //     onPressed: () {
-                            //       BlocProvider.of<UserTodosCubit>(context)
-                            //           .getTodos(id);
-                            //           // .fetchAndInsertTodos(id);
-                            //           // .fetchTodosById(id);
-                            //       // .fetchPostsById(id);
-                            //       //.onSearchById(id);
-                            //     },
-                            //     child: const Text("Fetch Post"),
-                            //   ),
-                            // ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Center(
-                              child: Text(state.str!),
-                            ),
-                          ],
-                        );
-                      case UserTodosStatus.socketStatus:
-                        return Column(
-                          children: const [
-                            // Center(
-                            //   child: CupertinoButton(
-                            //     color: Colors.blue,
-                            //     onPressed: () {
-                            //       BlocProvider.of<UserTodosCubit>(context)
-                            //           .fetchTodosById(id);
-                            //       // .fetchPostsById(id);
-                            //       // .onSearchById(id);
-                            //     },
-                            //     child: const Text("Fetch Post"),
-                            //   ),
-                            // ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Center(
-                              child: Text("No Internet Connection"),
-                            ),
-                          ],
-                        );
-                      case UserTodosStatus.timeoutStatus:
-                        return Column(
-                          children: const [
-                            // Center(
-                            //   child: CupertinoButton(
-                            //     color: Colors.blue,
-                            //     onPressed: () {
-                            //       BlocProvider.of<UserTodosCubit>(context)
-                            //           .getTodos(id);
-                            //       // .fetchAndInsertTodos(id);
-                            //       // .fetchTodosById(id);
-                            //       //.fetchPostsById(id);
-                            //       // .onSearchById(id);
-                            //       //onSearchById
-                            //     },
-                            //     child: const Text("Fetch Post"),
-                            //   ),
-                            // ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Center(
-                              child: Text("Request Timeout Exception"),
-                            ),
-                          ],
-                        );
-                      case UserTodosStatus.userStatus:
-                        return Column(
-                          children: const [
-                            // Center(
-                            //   child: CupertinoButton(
-                            //     color: Colors.blue,
-                            //     onPressed: () {
-                            //       BlocProvider.of<UserTodosCubit>(context)
-                            //           .getTodos(id);
-                            //       // .fetchAndInsertTodos(id);
-                            //       // .fetchTodosById(id);
-                            //       // .fetchPostsById(id);
-                            //       // .onSearchById(id);
-                            //     },
-                            //     child: const Text("Fetch Post"),
-                            //   ),
-                            // ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Center(
-                              child: Text("User Mobile Issue"),
-                            ),
-                          ],
-                        );
-                    }
-                  },
-                ),
-              ],
+                            children: [
+
+                              // Padding(
+                              //   padding: const EdgeInsets.only(left: 5.0, right: 5),
+                              //   child: TextField(
+                              //     onChanged: (value) =>
+                              //         BlocProvider.of<PostCubit>(context)
+                              //             .onSearch(value),
+                              //     decoration: InputDecoration(
+                              //         labelText: "Search Post by Title",
+                              //         fillColor: Colors.white,
+                              //         border: OutlineInputBorder(
+                              //           borderRadius: BorderRadius.circular(25.0),
+                              //           borderSide: const BorderSide(),
+                              //         ),
+                              //         prefixIcon: const Icon(Icons.search)
+                              //         //fillColor: Colors.green
+                              //         ),
+                              //     keyboardType: TextInputType.text,
+                              //     style: const TextStyle(
+                              //       fontFamily: "Poppins",
+                              //     ),
+                              //     // controller: nameController,
+                              //   ),
+                              // ),
+                              buildListTodosViewWidget(context, state)
+                            ],
+                          );
+
+                        case UserTodosStatus.failure:
+                          return Column(
+                            children: [
+                              // Center(
+                              //   child: CupertinoButton(
+                              //     color: Colors.blue,
+                              //     onPressed: () {
+                              //       BlocProvider.of<UserTodosCubit>(context)
+                              //           .getTodos(id);
+                              //           // .fetchAndInsertTodos(id);
+                              //           // .fetchTodosById(id);
+                              //       // .fetchPostsById(id);
+                              //       //.onSearchById(id);
+                              //     },
+                              //     child: const Text("Fetch Post"),
+                              //   ),
+                              // ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Center(
+                                child: Text(state.str!),
+                              ),
+                            ],
+                          );
+                        case UserTodosStatus.socketStatus:
+                          return Column(
+                            children: const [
+                              // Center(
+                              //   child: CupertinoButton(
+                              //     color: Colors.blue,
+                              //     onPressed: () {
+                              //       BlocProvider.of<UserTodosCubit>(context)
+                              //           .fetchTodosById(id);
+                              //       // .fetchPostsById(id);
+                              //       // .onSearchById(id);
+                              //     },
+                              //     child: const Text("Fetch Post"),
+                              //   ),
+                              // ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Center(
+                                child: Text("No Internet Connection"),
+                              ),
+                            ],
+                          );
+                        case UserTodosStatus.timeoutStatus:
+                          return Column(
+                            children: const [
+                              // Center(
+                              //   child: CupertinoButton(
+                              //     color: Colors.blue,
+                              //     onPressed: () {
+                              //       BlocProvider.of<UserTodosCubit>(context)
+                              //           .getTodos(id);
+                              //       // .fetchAndInsertTodos(id);
+                              //       // .fetchTodosById(id);
+                              //       //.fetchPostsById(id);
+                              //       // .onSearchById(id);
+                              //       //onSearchById
+                              //     },
+                              //     child: const Text("Fetch Post"),
+                              //   ),
+                              // ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Center(
+                                child: Text("Request Timeout Exception"),
+                              ),
+                            ],
+                          );
+                        case UserTodosStatus.userStatus:
+                          return Column(
+                            children: const [
+                              // Center(
+                              //   child: CupertinoButton(
+                              //     color: Colors.blue,
+                              //     onPressed: () {
+                              //       BlocProvider.of<UserTodosCubit>(context)
+                              //           .getTodos(id);
+                              //       // .fetchAndInsertTodos(id);
+                              //       // .fetchTodosById(id);
+                              //       // .fetchPostsById(id);
+                              //       // .onSearchById(id);
+                              //     },
+                              //     child: const Text("Fetch Post"),
+                              //   ),
+                              // ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Center(
+                                child: Text("User Mobile Issue"),
+                              ),
+                            ],
+                          );
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -210,14 +219,16 @@ class _UserTodosScreenState extends State<UserTodosScreen> {
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         physics: const ScrollPhysics(),
-        itemCount: state.todosModel!.length,
+        itemCount: state.userTodoTableDataList!.length,
         itemBuilder: (BuildContext context, int index) {
-          var todos = BlocProvider.of<UserTodosCubit>(context).todosList[index];
+          var todos = BlocProvider
+              .of<UserTodosCubit>(context).userTodoTableData[index];
+              //.todosList[index];
           return buildTodosCardWidget(todos);
         });
   }
 
-  Widget buildTodosCardWidget(TodosModel todos) {
+  Widget buildTodosCardWidget(UserTodoTableData todos) {
     return InkWell(
       onTap: () {
         // Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -260,7 +271,7 @@ class _UserTodosScreenState extends State<UserTodosScreen> {
                     Row(
                       children: [
                         const Text("Id : "),
-                        Text(todos.id.toString()),
+                        Text(todos.todoId.toString()),
                         // Text(snapshot.data![index].id.toString()),
                       ],
                     ),
@@ -269,8 +280,8 @@ class _UserTodosScreenState extends State<UserTodosScreen> {
                     ),
                     Row(
                       children: [
-                        const Text("Post Title : "),
-                        Expanded(child: Text(todos.title.toString())),
+                        const Text("Title : "),
+                        Expanded(child: Text(todos.todoTitle.toString())),
                       ],
                     ),
 
@@ -279,8 +290,8 @@ class _UserTodosScreenState extends State<UserTodosScreen> {
                     ),
                     Row(
                       children: [
-                        const Text("Post Body : "),
-                        Expanded(child: Text(todos.completed.toString())),
+                        const Text("Completed : "),
+                        Expanded(child: Text(todos.isCompleted.toString())),
                       ],
                     ),
                     const SizedBox(

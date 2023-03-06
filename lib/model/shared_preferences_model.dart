@@ -13,14 +13,21 @@ class SharedPreferencesModel {
     return prefs.getBool("loginStatus") ?? false;
   }
 
-  //api calling
-  // void setTodoApiCallStatus(bool value) {
-  //   prefs.setBool("apiCallStatus", value);
-  // }
-  // bool getTodoApiCallStatus() {
-  //   return prefs.getBool("apiCallStatus") ?? false;
-  // }
-  //
+  //api todos calling status
+  void setTodoApiCallStatus(bool value) {
+    prefs.setBool("apiCallStatus", value);
+  }
+  bool getTodoApiCallStatus() {
+    return prefs.getBool("apiCallStatus") ?? false;
+  }//end
+
+  //api posts calling status
+  void setUserPostsApiCallStatus(bool value) {
+    prefs.setBool("apiCallStatus", value);
+  }
+  bool getUserPostsApiCallStatus() {
+    return prefs.getBool("apiCallStatus") ?? false;
+  }//end
 
 
   void setLoginEmail(String value) {

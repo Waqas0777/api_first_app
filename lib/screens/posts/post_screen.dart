@@ -610,7 +610,8 @@ class _PostScreenState extends State<PostScreen> {
                       getIt<SharedPreferencesModel>().removeEmail();
                       getIt<SharedPreferencesModel>().prefs.clear();
                       getIt<SharedPreferencesModel>().setLoginId(0);
-
+                      getIt<SharedPreferencesModel>().setTodoApiCallStatus(false);
+                      getIt<SharedPreferencesModel>().setUserPostsApiCallStatus(false);
                       // BlocProvider.of<RegisteredPostCubit>(context).c
                       Navigator.pop(context);
                       BlocProvider.of<PostCubit>(context).onLogoutClicked();
