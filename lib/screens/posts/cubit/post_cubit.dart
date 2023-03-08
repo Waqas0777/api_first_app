@@ -32,6 +32,8 @@ class PostCubit extends Cubit<PostState> {
 //fetching specific user post by user id
   Future<List<PostModel>> fetchPostsById(int id) async {
     emit(state.copyWith(status: UserStatus.loading));
+
+
     try {
       final response = await http
           .get(Uri.parse(

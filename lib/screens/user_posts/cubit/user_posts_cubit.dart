@@ -7,16 +7,16 @@ import '../../../database/db/app_database.dart';
 import '../../../main.dart';
 import '../../../model/post_model.dart';
 import 'package:http/http.dart' as http;
-
 import '../../../model/shared_preferences_model.dart';
 
 part 'user_posts_state.dart';
 
 class UserPostsCubit extends Cubit<UserPostsState> {
   UserPostsCubit() : super(const UserPostsState());
-  var postModel = PostModel();
+
+  //var postModel = PostModel();
   late List<PostModel> postList = [];
-  late List<PostModel> resultList = [];
+ // late List<PostModel> resultList = [];
   late List<UserPostTableData> userPostTableData = [];
 
   late String? user;
@@ -24,7 +24,6 @@ class UserPostsCubit extends Cubit<UserPostsState> {
 
   // Define a method to handle the back press
   void handleBackPress() {
-    // Emit the initial state
     emit(
       state.copyWith(
         status: UserPostsStatus.initial,
@@ -33,10 +32,12 @@ class UserPostsCubit extends Cubit<UserPostsState> {
   }
 
   Future<Object?> fetchPostsById(int id) async {
+    log("fetchPostsById");
+
     emit(state.copyWith(status: UserPostsStatus.loading));
-    var checkApiCall = getIt<SharedPreferencesModel>().getTodoApiCallStatus();
-    log('$checkApiCall', name: "checkApiCall");
-    if (checkApiCall) {
+    var checkPostApiCall = getIt<SharedPreferencesModel>().getUserPostsApiCallStatus();
+    log('$checkPostApiCall', name: "checkApiCallPosts");
+    if (checkPostApiCall) {
       List<UserPostTableData>? list = getAllPostsById(id);
       return list;
     } else {
@@ -44,11 +45,10 @@ class UserPostsCubit extends Cubit<UserPostsState> {
         final response = await http
             .get(Uri.parse(
                 'https://jsonplaceholder.typicode.com/users/' "$id" '/posts'))
-            .timeout(const Duration(seconds: timeOutDuration));
+            .timeout(                                                                                                                       const Duration(seconds: timeOutDuration));
         if (response.statusCode == 200) {
-          getIt<SharedPreferencesModel>().setUserPostsApiCallStatus(true);
           log('${response.statusCode}', name: "statusCode");
-          log('$checkApiCall', name: "checkApiCall");
+          log('$checkPostApiCall', name: "checkApiCall");
           var body = jsonDecode(response.body);
           List<PostModel> postModel = (json.decode(response.body) as List)
               .map((data) => PostModel.fromJson(data))
@@ -61,7 +61,7 @@ class UserPostsCubit extends Cubit<UserPostsState> {
                 userId: element["userId"],
                 id: element["id"],
                 title: element["title"],
-                body: element["body"]);
+                body: element["body"],);
             postList.add(postModel);
           }
           await getIt<AppDatabase>().userPostTableDao.insertPosts(postList);
@@ -88,8 +88,8 @@ class UserPostsCubit extends Cubit<UserPostsState> {
       } on SocketException {
         emit(
           state.copyWith(
-            status: UserPostsStatus.socketStatus,
-          ),
+              status: UserPostsStatus.socketStatus,
+              str: "No Internet Connection"),
         );
         // Handle socket exception
         return Future.error("No Internet Connection");
@@ -98,8 +98,6 @@ class UserPostsCubit extends Cubit<UserPostsState> {
   }
 
   List<UserPostTableData>? getAllPostsById(int id) {
-    log("calling getTodossss");
-
     try {
       log("calling try");
       // emit(RegisteredPostLoadingState());
@@ -108,7 +106,7 @@ class UserPostsCubit extends Cubit<UserPostsState> {
           .userPostTableDao
           .getAllPostsByUserId(id)
           .listen((id) async {
-        log("$id", name: "iddd");
+        log("$userPostTableData", name: "userPostTableData");
 
         userPostTableData.clear();
         for (var element in id) {
@@ -116,7 +114,7 @@ class UserPostsCubit extends Cubit<UserPostsState> {
               userId: element.userId,
               postId: element.postId,
               postTitle: element.postTitle,
-              postBody: element.postBody));
+              postBody: element.postBody,));
           //log("$element",name:"element");
         }
         emit(state.copyWith(
@@ -133,6 +131,45 @@ class UserPostsCubit extends Cubit<UserPostsState> {
       ));
     }
   }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //api calling user posts
 // Future<List<PostModel>> fetchPostsById(int id) async {
@@ -204,4 +241,3 @@ class UserPostsCubit extends Cubit<UserPostsState> {
 //     return Future.error("No Internet Connection");
 //   }
 // }
-}

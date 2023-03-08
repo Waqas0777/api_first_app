@@ -6,6 +6,7 @@ enum LoginStatus {
   loading,
   success,
   failure,
+  internetIssue,
 }
 
 class LoginState extends Equatable {

@@ -8,23 +8,19 @@ import '../../../database/db/app_database.dart';
 import '../../../main.dart';
 import '../../../model/shared_preferences_model.dart';
 import '../../../model/todos_model.dart';
-
 part 'user_todos_state.dart';
 
 class UserTodosCubit extends Cubit<UserTodosState> {
   UserTodosCubit() : super(const UserTodosState());
 
-  // var todosModel = TodosModel();
   late List<UserTodoTableData> userTodoTableData = [];
 
   late List<TodosModel> todosList = [];
 
-  // late List<TodosModel> todosResultList = [];
   late String? user;
   static const int timeOutDuration = 5;
 
   void handleBackPress() {
-    // Emit the initial state
     emit(
       state.copyWith(
         status: UserTodosStatus.initial,
@@ -36,17 +32,19 @@ class UserTodosCubit extends Cubit<UserTodosState> {
   Future<Object?> fetchTodosById(int id) async {
     emit(state.copyWith(status: UserTodosStatus.loading));
     var checkApiCall = getIt<SharedPreferencesModel>().getTodoApiCallStatus();
-    log('$checkApiCall', name: "checkApiCall");
+    log('$checkApiCall', name: "checkApiCallTodo");
     if (checkApiCall) {
       List<UserTodoTableData>? list = getAllTodosById(id);
       return list;
     } else {
+
       try {
         final response = await http
             .get(Uri.parse(
-                'https://jsonplaceholder.typicode.com/users/' "$id" '/todos'))
+            'https://jsonplaceholder.typicode.com/users/' "$id" '/todos'))
             .timeout(const Duration(seconds: timeOutDuration));
         if (response.statusCode == 200) {
+
           getIt<SharedPreferencesModel>().setTodoApiCallStatus(true);
           log('${response.statusCode}', name: "statusCode");
           log('$checkApiCall', name: "checkApiCall");
@@ -62,7 +60,7 @@ class UserTodosCubit extends Cubit<UserTodosState> {
                 userId: element["userId"],
                 id: element["id"],
                 title: element["title"],
-                completed: element["completed"]);
+                completed: element["completed"],);
             todosList.add(todosModel);
           }
           await getIt<AppDatabase>().userTodoTableDao.insertTodos(todosList);
@@ -80,7 +78,7 @@ class UserTodosCubit extends Cubit<UserTodosState> {
           //user = body.toString();
           return todosList;
         } else {
-          getIt<SharedPreferencesModel>().setTodoApiCallStatus(true);
+         // getIt<SharedPreferencesModel>().setTodoApiCallStatus(true);
           emit(
             state.copyWith(
               status: UserTodosStatus.failure,
@@ -100,57 +98,8 @@ class UserTodosCubit extends Cubit<UserTodosState> {
     }
   }
 
-  // List<UserTodoTableData>? getAllTodos(int id) {
-  //   log("calling getTodos");
-  //
-  //   try {
-  //     log("calling try");
-  //     emit(
-  //       state.copyWith(
-  //         status: UserTodosStatus.loading,
-  //       ),
-  //     );
-  //
-  //      getIt<AppDatabase>()
-  //         .userTodoTableDao
-  //         .getAllUserTodosByUserId(id)
-  //         .listen((id) async {
-  //       //log("event $value");
-  //
-  //       todosList.clear();
-  //       userTodoTableData.clear();
-  //       for (var element in id) {
-  //         log("registered list=$element");
-  //         userTodoTableData.add(UserTodoTableData(
-  //             todoId: element.todoId,
-  //             userId: element.userId,
-  //             todoTitle: element.todoTitle,
-  //             isCompleted: element.isCompleted));
-  //
-  //         //log("LoadedState");
-  //       }
-  //
-  //       emit(
-  //         state.copyWith(
-  //             status: UserTodosStatus.success,
-  //             listUserTodoTableData: userTodoTableData),
-  //       );
-  //       log("list length=${userTodoTableData.length}");
-  //     });
-  //      return userTodoTableData;
-  //   } catch (e) {
-  //     log(" error $e");
-  //     // emit(state.copyWith(
-  //     //   status: UserTodosStatus.failure,
-  //     //   str: (e.toString()),
-  //     // ));
-  //     return null;
-  //   }
-  // }
 
   List<UserTodoTableData>? getAllTodosById(int id) {
-    log("calling getTodossss");
-
     try {
       log("calling try");
       // emit(RegisteredPostLoadingState());
@@ -159,7 +108,7 @@ class UserTodosCubit extends Cubit<UserTodosState> {
           .userTodoTableDao
           .getAllTodosByUserId(id)
           .listen((id) async {
-        log("$id", name: "iddd");
+        log("${userTodoTableData.length}", name: "userTodoTableData");
 
         userTodoTableData.clear();
         for (var element in id) {
@@ -167,7 +116,7 @@ class UserTodosCubit extends Cubit<UserTodosState> {
               todoId: element.todoId,
               userId: element.userId,
               todoTitle: element.todoTitle,
-              isCompleted: element.isCompleted));
+              isCompleted: element.isCompleted,));
           //log("$element",name:"element");
         }
         emit(state.copyWith(
@@ -184,7 +133,80 @@ class UserTodosCubit extends Cubit<UserTodosState> {
       ));
     }
   }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// List<UserTodoTableData>? getAllTodos(int id) {
+//   log("calling getTodos");
+//
+//   try {
+//     log("calling try");
+//     emit(
+//       state.copyWith(
+//         status: UserTodosStatus.loading,
+//       ),
+//     );
+//
+//      getIt<AppDatabase>()
+//         .userTodoTableDao
+//         .getAllUserTodosByUserId(id)
+//         .listen((id) async {
+//       //log("event $value");
+//
+//       todosList.clear();
+//       userTodoTableData.clear();
+//       for (var element in id) {
+//         log("registered list=$element");
+//         userTodoTableData.add(UserTodoTableData(
+//             todoId: element.todoId,
+//             userId: element.userId,
+//             todoTitle: element.todoTitle,
+//             isCompleted: element.isCompleted));
+//
+//         //log("LoadedState");
+//       }
+//
+//       emit(
+//         state.copyWith(
+//             status: UserTodosStatus.success,
+//             listUserTodoTableData: userTodoTableData),
+//       );
+//       log("list length=${userTodoTableData.length}");
+//     });
+//      return userTodoTableData;
+//   } catch (e) {
+//     log(" error $e");
+//     // emit(state.copyWith(
+//     //   status: UserTodosStatus.failure,
+//     //   str: (e.toString()),
+//     // ));
+//     return null;
+//   }
+// }
+
+
+
 // Future<List<TodosModel>> fetchTodosById(int id) async {
 //   emit(state.copyWith(status: UserTodosStatus.loading));
 //   try {

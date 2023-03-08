@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import '../posts/post_screen.dart';
 import 'cubit/login_cubit.dart';
 import 'cubit/login_state.dart';
 
@@ -33,28 +33,67 @@ class _LoginScreenState extends State<LoginScreen> {
         title: const Text("Login Screen"),
       ),
       body: SafeArea(
-          child: Column(
-        children: [
-          const SizedBox(
-            height: 20,
-          ),
-          buildFormWidget(),
-          BlocBuilder<LoginCubit, LoginState>(
-            builder: (context, state) {
-              return CupertinoButton(
-                color: Colors.blue,
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    BlocProvider.of<LoginCubit>(context).
-                    fetchUsers(context, userEmailController.text.toString());
-                  }
-                },
-                child: const Text("Login"),
-              );
-            },
-          ),
-        ],
-      )),
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            const SizedBox(
+              height: 20,
+            ),
+            buildFormWidget(),
+            BlocBuilder<LoginCubit, LoginState>(
+              builder: (context, state) {
+                switch (state.status) {
+                  case LoginStatus.loading:
+                    return const Center(child: CircularProgressIndicator());
+                  case LoginStatus.initial:
+                    return Center(
+                        child: CupertinoButton(
+                      color: Colors.blue,
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          BlocProvider.of<LoginCubit>(context).fetchUsers(
+                              context, userEmailController.text.toString());
+                        }
+                      },
+                      child: const Text("Login"),
+                    ));
+                  case LoginStatus.success:
+                    //showInSnackBar("Success", Colors.green);
+                    return const PostScreen();
+
+                  case LoginStatus.failure:
+                    //showInSnackBarError(context,"Failed",Colors.red);
+                    return Center(
+                        child: CupertinoButton(
+                      color: Colors.blue,
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          BlocProvider.of<LoginCubit>(context).fetchUsers(
+                              context, userEmailController.text.toString());
+                        }
+                      },
+                      child: const Text("Login"),
+                    ));
+
+                  case LoginStatus.internetIssue:
+                    showInSnackBarError(context, "Failed", Colors.blueGrey);
+                    return Center(
+                        child: CupertinoButton(
+                      color: Colors.blue,
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          BlocProvider.of<LoginCubit>(context).fetchUsers(
+                              context, userEmailController.text.toString());
+                        }
+                      },
+                      child: const Text("Login"),
+                    ));
+                }
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -132,8 +171,17 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-}
 
+  void showInSnackBarError(BuildContext context, String value, Color color) {
+    var snackBar = SnackBar(content: Text(value), backgroundColor: color);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+// void showInSnackBar(String value, Color color) {
+//   var snackBar = SnackBar(content: Text(value), backgroundColor: color);
+//   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+// }
+}
 //
 // switch (state.status) {
 // case LoginStatus.initial:

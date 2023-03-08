@@ -20,7 +20,7 @@ class UserPostTableDao extends DatabaseAccessor<AppDatabase>
     return into(userPostTable).insert(entry);
   }
   Stream<List<UserPostTableData>> getAllPostsByUserId(int userId) {
-    log("$userId", name: "userIdd");
+    log("$getAllPostsByUserId", name: "getAllPostsByUserId called");
     return (select(userPostTable)..where((tbl) => tbl.userId.equals(userId)))
         .watch();
   }

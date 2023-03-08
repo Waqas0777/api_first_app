@@ -21,7 +21,7 @@ class UserTodoTableDao extends DatabaseAccessor<AppDatabase>
   Future<List<UserTodoTableData>> getAllTodos() => select(userTodoTable).get();
 
   Stream<List<UserTodoTableData>> getAllTodosByUserId(int userId) {
-    log("$userId", name: "userIdd");
+    log("$getAllTodosByUserId", name: "getAllTodosByUserId called");
     return (select(userTodoTable)..where((tbl) => tbl.userId.equals(userId)))
         .watch();
   }

@@ -28,7 +28,7 @@ class UserPostsState extends Equatable {
 
   @override
   // TODO: implement props
-  List<Object?> get props => [status, postModel, exception];
+  List<Object?> get props => [status, postModel, exception, str];
 
   UserPostsState copyWith({
     UserPostsStatus? status,
@@ -36,7 +36,6 @@ class UserPostsState extends Equatable {
     List<UserPostTableData>? listUserPostTableData,
     Exception? exception,
     String? str,
-
   }) {
     return UserPostsState(
       status: status ?? this.status,
@@ -44,7 +43,6 @@ class UserPostsState extends Equatable {
       userPostTableDataList: listUserPostTableData ?? listUserPostTableData,
       exception: exception ?? this.exception,
       str: str ?? this.str,
-
     );
   }
 }

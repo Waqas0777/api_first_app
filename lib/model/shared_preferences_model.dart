@@ -15,19 +15,20 @@ class SharedPreferencesModel {
 
   //api todos calling status
   void setTodoApiCallStatus(bool value) {
-    prefs.setBool("apiCallStatus", value);
+    prefs.setBool("todoApiCallStatus", value);
   }
   bool getTodoApiCallStatus() {
-    return prefs.getBool("apiCallStatus") ?? false;
+    return prefs.getBool("todoApiCallStatus") ?? false;
   }//end
 
   //api posts calling status
   void setUserPostsApiCallStatus(bool value) {
-    prefs.setBool("apiCallStatus", value);
+    prefs.setBool("postApiCallStatus", value);
   }
   bool getUserPostsApiCallStatus() {
-    return prefs.getBool("apiCallStatus") ?? false;
-  }//end
+    return prefs.getBool("postApiCallStatus") ?? false;
+  }
+  //end
 
 
   void setLoginEmail(String value) {

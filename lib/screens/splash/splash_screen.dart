@@ -9,7 +9,6 @@ import '../user_comments/user_comments_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
-
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
@@ -30,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 1), () {
       navigateUser(); //It will redirect  after 3 seconds
     });
-    setState(() {});
+
   }
 
   void navigateUser() async {

@@ -1,10 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../main.dart';
-import '../../model/post_model.dart';
 import '../../model/shared_preferences_model.dart';
 import '../../model/todos_model.dart';
 import '../../model/user_model.dart';
@@ -57,224 +55,60 @@ class _PostScreenState extends State<PostScreen> {
       body: SafeArea(
         child: BlocBuilder<PostCubit, PostState>(
           builder: (context, state) {
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  buildUserInfoCardWidget(),
-                  // Padding(
-                  //   padding: const EdgeInsets.only(left: 5.0, right: 5),
-                  //   child: TextField(
-                  //     onChanged: (value) =>
-                  //         BlocProvider.of<PostCubit>(context).onSearch(value),
-                  //     decoration: InputDecoration(
-                  //         labelText: "Search Post ",
-                  //         fillColor: Colors.white,
-                  //         border: OutlineInputBorder(
-                  //           borderRadius: BorderRadius.circular(25.0),
-                  //           borderSide: const BorderSide(),
-                  //         ),
-                  //         prefixIcon: const Icon(Icons.search)
-                  //         //fillColor: Colors.green
-                  //         ),
-                  //     keyboardType: TextInputType.text,
-                  //     style: const TextStyle(
-                  //       fontFamily: "Poppins",
-                  //     ),
-                  //     // controller: nameController,
-                  //   ),
-                  // ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Center(
-                    child: CupertinoButton(
-                      color: Colors.blue,
-                      onPressed: () {
-                        // BlocProvider.of<PostCubit>(context)
-                        //     .fetchTodosById(id);
-                        // .onSearchById(id);
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                              BlocProvider.of<UserPostsCubit>(context)
-                                  .fetchPostsById(id);
-                              return const UserPostsScreen();
-                            }));
-                      },
-                      child: const Text("Fetch Post"),
+            return Container(
+              constraints: const BoxConstraints.expand(),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 10,
                     ),
-                  ),
-                  // BlocBuilder<PostCubit, PostState>(
-                  //   builder: (context, state) {
-                  //     switch (state.status) {
-                  //       case UserStatus.loading:
-                  //         return const Center(child: CircularProgressIndicator());
-                  //       case UserStatus.initial:
-                  //         return Center(
-                  //           child: CupertinoButton(
-                  //             color: Colors.blue,
-                  //             onPressed: () {
-                  //               // BlocProvider.of<PostCubit>(context)
-                  //               //     .fetchTodosById(id);
-                  //               // .onSearchById(id);
-                  //               Navigator.push(context,
-                  //                   MaterialPageRoute(builder: (context) {
-                  //                 return const UserPostsScreen();
-                  //               }));
-                  //             },
-                  //             child: const Text("Fetch Post"),
-                  //           ),
-                  //         );
-                  //
-                  //       case UserStatus.searchingStatus:
-                  //         return Column(
-                  //             //children: [buildSearchViewWidget(context, state)],
-                  //             );
-                  //       case UserStatus.success:
-                  //         //state.users.toString()
-                  //         return Column(
-                  //           children: [
-                  //             // Padding(
-                  //             //   padding: const EdgeInsets.only(left: 5.0, right: 5),
-                  //             //   child: TextField(
-                  //             //     onChanged: (value) =>
-                  //             //         BlocProvider.of<PostCubit>(context)
-                  //             //             .onSearch(value),
-                  //             //     decoration: InputDecoration(
-                  //             //         labelText: "Search Post by Title",
-                  //             //         fillColor: Colors.white,
-                  //             //         border: OutlineInputBorder(
-                  //             //           borderRadius: BorderRadius.circular(25.0),
-                  //             //           borderSide: const BorderSide(),
-                  //             //         ),
-                  //             //         prefixIcon: const Icon(Icons.search)
-                  //             //         //fillColor: Colors.green
-                  //             //         ),
-                  //             //     keyboardType: TextInputType.text,
-                  //             //     style: const TextStyle(
-                  //             //       fontFamily: "Poppins",
-                  //             //     ),
-                  //             //     // controller: nameController,
-                  //             //   ),
-                  //             // ),
-                  //             buildListTodosViewWidget(context, state)
-                  //           ],
-                  //         );
-                  //
-                  //       case UserStatus.failure:
-                  //         return Column(
-                  //           children: [
-                  //             Center(
-                  //               child: CupertinoButton(
-                  //                 color: Colors.blue,
-                  //                 onPressed: () {
-                  //                   BlocProvider.of<PostCubit>(context)
-                  //                       .fetchTodosById(id);
-                  //                   // .fetchPostsById(id);
-                  //                   //.onSearchById(id);
-                  //                 },
-                  //                 child: const Text("Fetch Post"),
-                  //               ),
-                  //             ),
-                  //             const SizedBox(
-                  //               height: 10,
-                  //             ),
-                  //             const Center(child: Text("Something went wrong"))
-                  //           ],
-                  //         );
-                  //       case UserStatus.socketStatus:
-                  //         return Column(
-                  //           children: [
-                  //             Center(
-                  //               child: CupertinoButton(
-                  //                 color: Colors.blue,
-                  //                 onPressed: () {
-                  //                   BlocProvider.of<PostCubit>(context)
-                  //                       .fetchTodosById(id);
-                  //                   // .fetchPostsById(id);
-                  //                   // .onSearchById(id);
-                  //                 },
-                  //                 child: const Text("Fetch Post"),
-                  //               ),
-                  //             ),
-                  //             const SizedBox(
-                  //               height: 10,
-                  //             ),
-                  //             const Center(child: Text("No Internet Connection"))
-                  //           ],
-                  //         );
-                  //       case UserStatus.timeoutStatus:
-                  //         return Column(
-                  //           children: [
-                  //             Center(
-                  //               child: CupertinoButton(
-                  //                 color: Colors.blue,
-                  //                 onPressed: () {
-                  //                   BlocProvider.of<PostCubit>(context)
-                  //                       .fetchTodosById(id);
-                  //                   //.fetchPostsById(id);
-                  //                   // .onSearchById(id);
-                  //                   //onSearchById
-                  //                 },
-                  //                 child: const Text("Fetch Post"),
-                  //               ),
-                  //             ),
-                  //             const SizedBox(
-                  //               height: 10,
-                  //             ),
-                  //             const Center(child: Text("Request Timeout Exception"))
-                  //           ],
-                  //         );
-                  //       case UserStatus.userStatus:
-                  //         return Column(
-                  //           children: [
-                  //             Center(
-                  //               child: CupertinoButton(
-                  //                 color: Colors.blue,
-                  //                 onPressed: () {
-                  //                   BlocProvider.of<PostCubit>(context)
-                  //                       .fetchTodosById(id);
-                  //                   // .fetchPostsById(id);
-                  //                   // .onSearchById(id);
-                  //                 },
-                  //                 child: const Text("Fetch Post"),
-                  //               ),
-                  //             ),
-                  //             const SizedBox(
-                  //               height: 10,
-                  //             ),
-                  //             const Center(child: Text("User Mobile Issue"))
-                  //           ],
-                  //         );
-                  //     }
-                  //   },
-                  // ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Center(
-                    child: CupertinoButton(
-                      color: Colors.blue,
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                              BlocProvider.of<UserTodosCubit>(context)
-                                  .fetchTodosById(id);
-                              // .getTodos(id);
-                              // .fetchAndInsertTodos(id);
+                    buildUserInfoCardWidget(),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Center(
+                      child: CupertinoButton(
+                        color: Colors.blue,
+                        onPressed: () {
+                          // BlocProvider.of<PostCubit>(context)
+                          //     .fetchTodosById(id);
+                          // .onSearchById(id);
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            BlocProvider.of<UserPostsCubit>(context)
+                                .fetchPostsById(id);
+                            return const UserPostsScreen();
+                          }));
+                        },
+                        child: const Text("Fetch Post"),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Center(
+                      child: CupertinoButton(
+                        color: Colors.blue,
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            BlocProvider.of<UserTodosCubit>(context)
+                                .fetchTodosById(id);
+                            // .getTodos(id);
+                            // .fetchAndInsertTodos(id);
 
-                              return const UserTodosScreen();
-                            }));
-                        // BlocProvider.of<PostCubit>(context).fetchTodosById(id);
-                        // .fetchPostsById(id);
-                        // .onSearchById(id);
-                      },
-                      child: const Text("Fetch Todos"),
+                            return const UserTodosScreen();
+                          }));
+                          // BlocProvider.of<PostCubit>(context).fetchTodosById(id);
+                          // .fetchPostsById(id);
+                          // .onSearchById(id);
+                        },
+                        child: const Text("Fetch Todos"),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },
@@ -284,114 +118,12 @@ class _PostScreenState extends State<PostScreen> {
   }
 
   void initialGetSavedData() {
+    //log("${initialGetSavedData}",name:"initialGetSavedData");
     Map<String, dynamic> jsonDataModel =
-    jsonDecode(getIt<SharedPreferencesModel>().getUser("user"));
+        jsonDecode(getIt<SharedPreferencesModel>().getUser("user"));
     userModel = UserModel.fromJson(jsonDataModel);
   }
 
-  // Widget buildSearchViewWidget(BuildContext context, PostState state) {
-  //   return (state.postModel!.isEmpty)
-  //       ? Container(
-  //           padding: const EdgeInsets.all(10),
-  //           decoration: BoxDecoration(
-  //             borderRadius: BorderRadius.circular(10),
-  //             color: const Color(0xffaabbaa),
-  //           ),
-  //           child: const Text(
-  //             "No Such Data Exits",
-  //             style: TextStyle(fontSize: 15, color: Colors.deepPurpleAccent),
-  //           ))
-  //       : ListView.builder(
-  //           scrollDirection: Axis.vertical,
-  //           shrinkWrap: true,
-  //           physics: const ScrollPhysics(),
-  //           itemCount: state.postModel!.length,
-  //           itemBuilder: (BuildContext context, int index) {
-  //             var post = state.postModel![index];
-  //             return buildSearchCardWidget(post);
-  //           });
-  // }
-
-  // Widget buildSearchCardWidget(PostModel post) {
-  //   return InkWell(
-  //     onTap: () {
-  //       Navigator.push(context, MaterialPageRoute(builder: (context) {
-  //         return PostDetailScreen(
-  //           id: post.id!,
-  //           model: post,
-  //         );
-  //       }));
-  //     },
-  //     child: Card(
-  //       shape: const RoundedRectangleBorder(
-  //         side: BorderSide(
-  //           color: Colors.green,
-  //           style: BorderStyle.solid,
-  //           width: 1.2,
-  //         ),
-  //         borderRadius: BorderRadius.only(
-  //             topLeft: Radius.circular(16), bottomRight: Radius.circular(16)),
-  //       ),
-  //       child: Padding(
-  //         padding: const EdgeInsets.all(12.0),
-  //         child: Row(
-  //           children: [
-  //             Expanded(
-  //               flex: 1,
-  //               child: Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 mainAxisAlignment: MainAxisAlignment.start,
-  //                 children: [
-  //                   // Text(employee.id.toString()),
-  //                   Row(
-  //                     children: [
-  //                       const Text("User ID : "),
-  //                       Text(post.userId.toString()),
-  //                     ],
-  //                   ),
-  //                   const SizedBox(
-  //                     height: 10,
-  //                   ),
-  //                   Row(
-  //                     children: [
-  //                       const Text("Id : "),
-  //                       Text(post.id.toString()),
-  //                       // Text(snapshot.data![index].id.toString()),
-  //                     ],
-  //                   ),
-  //                   const SizedBox(
-  //                     height: 10,
-  //                   ),
-  //                   Row(
-  //                     children: [
-  //                       const Text("Post Title : "),
-  //                       Expanded(child: Text(post.title.toString())),
-  //                     ],
-  //                   ),
-  //
-  //                   const SizedBox(
-  //                     height: 10,
-  //                   ),
-  //                   Row(
-  //                     children: [
-  //                       const Text("Post Body : "),
-  //                       Expanded(child: Text(post.body.toString())),
-  //                     ],
-  //                   ),
-  //                   const SizedBox(
-  //                     height: 10,
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  //user todos
   Widget buildListTodosViewWidget(BuildContext context, PostState state) {
     return ListView.builder(
         scrollDirection: Axis.vertical,
@@ -399,9 +131,7 @@ class _PostScreenState extends State<PostScreen> {
         physics: const ScrollPhysics(),
         itemCount: state.todosModel!.length,
         itemBuilder: (BuildContext context, int index) {
-          var todos = BlocProvider
-              .of<PostCubit>(context)
-              .todosList[index];
+          var todos = BlocProvider.of<PostCubit>(context).todosList[index];
           return buildTodosCardWidget(todos);
         });
   }
@@ -485,98 +215,6 @@ class _PostScreenState extends State<PostScreen> {
     );
   }
 
-  //user posts
-  // Widget buildListViewWidget(BuildContext context, PostState state) {
-  //   return ListView.builder(
-  //       scrollDirection: Axis.vertical,
-  //       shrinkWrap: true,
-  //       physics: const ScrollPhysics(),
-  //       itemCount: state.postModel!.length,
-  //       itemBuilder: (BuildContext context, int index) {
-  //         var post = BlocProvider.of<PostCubit>(context).postList[index];
-  //         return buildCardWidget(post);
-  //       });
-  // }
-
-  // Widget buildCardWidget(PostModel post) {
-  //   return InkWell(
-  //     onTap: () {
-  //       Navigator.push(context, MaterialPageRoute(builder: (context) {
-  //         return PostDetailScreen(
-  //           id: post.id!,
-  //           model: post,
-  //         );
-  //       }));
-  //     },
-  //     child: Card(
-  //       shape: const RoundedRectangleBorder(
-  //         side: BorderSide(
-  //           color: Colors.green,
-  //           style: BorderStyle.solid,
-  //           width: 1.2,
-  //         ),
-  //         borderRadius: BorderRadius.only(
-  //             topLeft: Radius.circular(16), bottomRight: Radius.circular(16)),
-  //       ),
-  //       child: Padding(
-  //         padding: const EdgeInsets.all(12.0),
-  //         child: Row(
-  //           children: [
-  //             Expanded(
-  //               flex: 1,
-  //               child: Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 mainAxisAlignment: MainAxisAlignment.start,
-  //                 children: [
-  //                   // Text(employee.id.toString()),
-  //                   Row(
-  //                     children: [
-  //                       const Text("User ID : "),
-  //                       Text(post.userId.toString()),
-  //                     ],
-  //                   ),
-  //                   const SizedBox(
-  //                     height: 10,
-  //                   ),
-  //                   Row(
-  //                     children: [
-  //                       const Text("Id : "),
-  //                       Text(post.id.toString()),
-  //                       // Text(snapshot.data![index].id.toString()),
-  //                     ],
-  //                   ),
-  //                   const SizedBox(
-  //                     height: 10,
-  //                   ),
-  //                   Row(
-  //                     children: [
-  //                       const Text("Post Title : "),
-  //                       Expanded(child: Text(post.title.toString())),
-  //                     ],
-  //                   ),
-  //
-  //                   const SizedBox(
-  //                     height: 10,
-  //                   ),
-  //                   Row(
-  //                     children: [
-  //                       const Text("Post Body : "),
-  //                       Expanded(child: Text(post.body.toString())),
-  //                     ],
-  //                   ),
-  //                   const SizedBox(
-  //                     height: 10,
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Widget logout() {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
@@ -604,21 +242,25 @@ class _PostScreenState extends State<PostScreen> {
                 children: [
                   InkWell(
                     onTap: () async {
-                      getIt<SharedPreferencesModel>().setLoginStatus(
-                          false); // prefs.setBool("isLoggedIn", true);
+                      getIt<SharedPreferencesModel>().setLoginStatus(false);
+                      // prefs.setBool("isLoggedIn", true);
                       //getIt<SharedPreferencesModel>().setLoginEmail("");
                       getIt<SharedPreferencesModel>().removeEmail();
                       getIt<SharedPreferencesModel>().prefs.clear();
                       getIt<SharedPreferencesModel>().setLoginId(0);
-                      getIt<SharedPreferencesModel>().setTodoApiCallStatus(false);
-                      getIt<SharedPreferencesModel>().setUserPostsApiCallStatus(false);
-                      // BlocProvider.of<RegisteredPostCubit>(context).c
+                      getIt<SharedPreferencesModel>()
+                          .setTodoApiCallStatus(false);
+                      getIt<SharedPreferencesModel>().getTodoApiCallStatus();
+                      getIt<SharedPreferencesModel>()
+                          .getUserPostsApiCallStatus();
+                      getIt<SharedPreferencesModel>()
+                          .setUserPostsApiCallStatus(false);
                       Navigator.pop(context);
                       BlocProvider.of<PostCubit>(context).onLogoutClicked();
                       Navigator.of(context).pushReplacement(
                           MaterialPageRoute(builder: (BuildContext context) {
-                            return const LoginScreen();
-                          }));
+                        return const LoginScreen();
+                      }));
                       //exit(0);
                     },
                     child: Container(
@@ -679,99 +321,462 @@ class _PostScreenState extends State<PostScreen> {
         padding: const EdgeInsets.all(12.0),
         child: Row(
           children: [
-            Expanded(
-              flex: 1,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Center(
-                    child: Text(
-                      "Logged In User Info ",
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Center(
+                  child: Text(
+                    "Logged In User Info ",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "UserEmail : ",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "UserEmail : ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(userModel.email.toString())
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Id : ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(userModel.id.toString())
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Username : ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(userModel.username.toString())
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Phone : ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(userModel.phone.toString())
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Website : ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(userModel.website.toString())
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                ],
-              ),
+                    Text(userModel.email.toString())
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Id : ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(userModel.id.toString())
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Username : ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(userModel.username.toString())
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Phone : ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(userModel.phone.toString())
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Website : ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(userModel.website.toString())
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+              ],
             ),
           ],
         ),
       ),
     );
   }
+}
+
+// Padding(
+//   padding: const EdgeInsets.only(left: 5.0, right: 5),
+//   child: TextField(
+//     onChanged: (value) =>
+//         BlocProvider.of<PostCubit>(context).onSearch(value),
+//     decoration: InputDecoration(
+//         labelText: "Search Post ",
+//         fillColor: Colors.white,
+//         border: OutlineInputBorder(
+//           borderRadius: BorderRadius.circular(25.0),
+//           borderSide: const BorderSide(),
+//         ),
+//         prefixIcon: const Icon(Icons.search)
+//         //fillColor: Colors.green
+//         ),
+//     keyboardType: TextInputType.text,
+//     style: const TextStyle(
+//       fontFamily: "Poppins",
+//     ),
+//     // controller: nameController,
+//   ),
+// ),
+
+// BlocBuilder<PostCubit, PostState>(
+//   builder: (context, state) {
+//     switch (state.status) {
+//       case UserStatus.loading:
+//         return const Center(child: CircularProgressIndicator());
+//       case UserStatus.initial:
+//         return Center(
+//           child: CupertinoButton(
+//             color: Colors.blue,
+//             onPressed: () {
+//               // BlocProvider.of<PostCubit>(context)
+//               //     .fetchTodosById(id);
+//               // .onSearchById(id);
+//               Navigator.push(context,
+//                   MaterialPageRoute(builder: (context) {
+//                 return const UserPostsScreen();
+//               }));
+//             },
+//             child: const Text("Fetch Post"),
+//           ),
+//         );
+//
+//       case UserStatus.searchingStatus:
+//         return Column(
+//             //children: [buildSearchViewWidget(context, state)],
+//             );
+//       case UserStatus.success:
+//         //state.users.toString()
+//         return Column(
+//           children: [
+//             // Padding(
+//             //   padding: const EdgeInsets.only(left: 5.0, right: 5),
+//             //   child: TextField(
+//             //     onChanged: (value) =>
+//             //         BlocProvider.of<PostCubit>(context)
+//             //             .onSearch(value),
+//             //     decoration: InputDecoration(
+//             //         labelText: "Search Post by Title",
+//             //         fillColor: Colors.white,
+//             //         border: OutlineInputBorder(
+//             //           borderRadius: BorderRadius.circular(25.0),
+//             //           borderSide: const BorderSide(),
+//             //         ),
+//             //         prefixIcon: const Icon(Icons.search)
+//             //         //fillColor: Colors.green
+//             //         ),
+//             //     keyboardType: TextInputType.text,
+//             //     style: const TextStyle(
+//             //       fontFamily: "Poppins",
+//             //     ),
+//             //     // controller: nameController,
+//             //   ),
+//             // ),
+//             buildListTodosViewWidget(context, state)
+//           ],
+//         );
+//
+//       case UserStatus.failure:
+//         return Column(
+//           children: [
+//             Center(
+//               child: CupertinoButton(
+//                 color: Colors.blue,
+//                 onPressed: () {
+//                   BlocProvider.of<PostCubit>(context)
+//                       .fetchTodosById(id);
+//                   // .fetchPostsById(id);
+//                   //.onSearchById(id);
+//                 },
+//                 child: const Text("Fetch Post"),
+//               ),
+//             ),
+//             const SizedBox(
+//               height: 10,
+//             ),
+//             const Center(child: Text("Something went wrong"))
+//           ],
+//         );
+//       case UserStatus.socketStatus:
+//         return Column(
+//           children: [
+//             Center(
+//               child: CupertinoButton(
+//                 color: Colors.blue,
+//                 onPressed: () {
+//                   BlocProvider.of<PostCubit>(context)
+//                       .fetchTodosById(id);
+//                   // .fetchPostsById(id);
+//                   // .onSearchById(id);
+//                 },
+//                 child: const Text("Fetch Post"),
+//               ),
+//             ),
+//             const SizedBox(
+//               height: 10,
+//             ),
+//             const Center(child: Text("No Internet Connection"))
+//           ],
+//         );
+//       case UserStatus.timeoutStatus:
+//         return Column(
+//           children: [
+//             Center(
+//               child: CupertinoButton(
+//                 color: Colors.blue,
+//                 onPressed: () {
+//                   BlocProvider.of<PostCubit>(context)
+//                       .fetchTodosById(id);
+//                   //.fetchPostsById(id);
+//                   // .onSearchById(id);
+//                   //onSearchById
+//                 },
+//                 child: const Text("Fetch Post"),
+//               ),
+//             ),
+//             const SizedBox(
+//               height: 10,
+//             ),
+//             const Center(child: Text("Request Timeout Exception"))
+//           ],
+//         );
+//       case UserStatus.userStatus:
+//         return Column(
+//           children: [
+//             Center(
+//               child: CupertinoButton(
+//                 color: Colors.blue,
+//                 onPressed: () {
+//                   BlocProvider.of<PostCubit>(context)
+//                       .fetchTodosById(id);
+//                   // .fetchPostsById(id);
+//                   // .onSearchById(id);
+//                 },
+//                 child: const Text("Fetch Post"),
+//               ),
+//             ),
+//             const SizedBox(
+//               height: 10,
+//             ),
+//             const Center(child: Text("User Mobile Issue"))
+//           ],
+//         );
+//     }
+//   },
+// ),
+
+//user posts
+// Widget buildListViewWidget(BuildContext context, PostState state) {
+//   return ListView.builder(
+//       scrollDirection: Axis.vertical,
+//       shrinkWrap: true,
+//       physics: const ScrollPhysics(),
+//       itemCount: state.postModel!.length,
+//       itemBuilder: (BuildContext context, int index) {
+//         var post = BlocProvider.of<PostCubit>(context).postList[index];
+//         return buildCardWidget(post);
+//       });
+// }
+
+// Widget buildCardWidget(PostModel post) {
+//   return InkWell(
+//     onTap: () {
+//       Navigator.push(context, MaterialPageRoute(builder: (context) {
+//         return PostDetailScreen(
+//           id: post.id!,
+//           model: post,
+//         );
+//       }));
+//     },
+//     child: Card(
+//       shape: const RoundedRectangleBorder(
+//         side: BorderSide(
+//           color: Colors.green,
+//           style: BorderStyle.solid,
+//           width: 1.2,
+//         ),
+//         borderRadius: BorderRadius.only(
+//             topLeft: Radius.circular(16), bottomRight: Radius.circular(16)),
+//       ),
+//       child: Padding(
+//         padding: const EdgeInsets.all(12.0),
+//         child: Row(
+//           children: [
+//             Expanded(
+//               flex: 1,
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 mainAxisAlignment: MainAxisAlignment.start,
+//                 children: [
+//                   // Text(employee.id.toString()),
+//                   Row(
+//                     children: [
+//                       const Text("User ID : "),
+//                       Text(post.userId.toString()),
+//                     ],
+//                   ),
+//                   const SizedBox(
+//                     height: 10,
+//                   ),
+//                   Row(
+//                     children: [
+//                       const Text("Id : "),
+//                       Text(post.id.toString()),
+//                       // Text(snapshot.data![index].id.toString()),
+//                     ],
+//                   ),
+//                   const SizedBox(
+//                     height: 10,
+//                   ),
+//                   Row(
+//                     children: [
+//                       const Text("Post Title : "),
+//                       Expanded(child: Text(post.title.toString())),
+//                     ],
+//                   ),
+//
+//                   const SizedBox(
+//                     height: 10,
+//                   ),
+//                   Row(
+//                     children: [
+//                       const Text("Post Body : "),
+//                       Expanded(child: Text(post.body.toString())),
+//                     ],
+//                   ),
+//                   const SizedBox(
+//                     height: 10,
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     ),
+//   );
+// }
+
+// Widget buildSearchViewWidget(BuildContext context, PostState state) {
+//   return (state.postModel!.isEmpty)
+//       ? Container(
+//           padding: const EdgeInsets.all(10),
+//           decoration: BoxDecoration(
+//             borderRadius: BorderRadius.circular(10),
+//             color: const Color(0xffaabbaa),
+//           ),
+//           child: const Text(
+//             "No Such Data Exits",
+//             style: TextStyle(fontSize: 15, color: Colors.deepPurpleAccent),
+//           ))
+//       : ListView.builder(
+//           scrollDirection: Axis.vertical,
+//           shrinkWrap: true,
+//           physics: const ScrollPhysics(),
+//           itemCount: state.postModel!.length,
+//           itemBuilder: (BuildContext context, int index) {
+//             var post = state.postModel![index];
+//             return buildSearchCardWidget(post);
+//           });
+// }
+
+// Widget buildSearchCardWidget(PostModel post) {
+//   return InkWell(
+//     onTap: () {
+//       Navigator.push(context, MaterialPageRoute(builder: (context) {
+//         return PostDetailScreen(
+//           id: post.id!,
+//           model: post,
+//         );
+//       }));
+//     },
+//     child: Card(
+//       shape: const RoundedRectangleBorder(
+//         side: BorderSide(
+//           color: Colors.green,
+//           style: BorderStyle.solid,
+//           width: 1.2,
+//         ),
+//         borderRadius: BorderRadius.only(
+//             topLeft: Radius.circular(16), bottomRight: Radius.circular(16)),
+//       ),
+//       child: Padding(
+//         padding: const EdgeInsets.all(12.0),
+//         child: Row(
+//           children: [
+//             Expanded(
+//               flex: 1,
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 mainAxisAlignment: MainAxisAlignment.start,
+//                 children: [
+//                   // Text(employee.id.toString()),
+//                   Row(
+//                     children: [
+//                       const Text("User ID : "),
+//                       Text(post.userId.toString()),
+//                     ],
+//                   ),
+//                   const SizedBox(
+//                     height: 10,
+//                   ),
+//                   Row(
+//                     children: [
+//                       const Text("Id : "),
+//                       Text(post.id.toString()),
+//                       // Text(snapshot.data![index].id.toString()),
+//                     ],
+//                   ),
+//                   const SizedBox(
+//                     height: 10,
+//                   ),
+//                   Row(
+//                     children: [
+//                       const Text("Post Title : "),
+//                       Expanded(child: Text(post.title.toString())),
+//                     ],
+//                   ),
+//
+//                   const SizedBox(
+//                     height: 10,
+//                   ),
+//                   Row(
+//                     children: [
+//                       const Text("Post Body : "),
+//                       Expanded(child: Text(post.body.toString())),
+//                     ],
+//                   ),
+//                   const SizedBox(
+//                     height: 10,
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     ),
+//   );
+// }
+
+//user todos
 
 // onSearch(String value) {
 //   log(value, name: "value");
@@ -782,4 +787,3 @@ class _PostScreenState extends State<PostScreen> {
 // void updateList(String value){
 //   filter_list = post.
 // }
-}

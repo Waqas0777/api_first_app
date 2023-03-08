@@ -20,24 +20,25 @@ class LoginCubit extends Cubit<LoginState> {
 
   //late String? user;
 
-  static const int timeOutDuration = 10;
+  static const int timeOutDuration = 5;
 
   Future<List<UserModel>> fetchUsers(
       BuildContext context, String userEmail) async {
     emit(state.copyWith(status: LoginStatus.loading));
-
+    log(userEmail, name: "userEmail");
     try {
       final response = await http
           .get(Uri.parse('https://jsonplaceholder.typicode.com/users'))
           .timeout(const Duration(seconds: timeOutDuration));
       if (response.statusCode == 200) {
+
         var body = jsonDecode(response.body);
         //log("$body", name: "body");
 
         List<UserModel> listUserModel = (json.decode(response.body) as List)
             .map((data) => UserModel.fromJson(data))
             .toList();
-        log("$listUserModel", name: "userModel");
+       // log("$listUserModel", name: "userModel");
         for (var element in listUserModel) {
           userModel = UserModel(
               name: element.name,
@@ -52,10 +53,9 @@ class LoginCubit extends Cubit<LoginState> {
           userList.add(userModel!);
         }
 
-        log(listUserModel.length.toString(), name: "userModel");
+       // log(listUserModel.length.toString(), name: "userModel");
 
-
-        checkUserExists(userEmail, listUserModel, userModel!)
+        checkUserExists(context,userEmail, listUserModel, userModel!)
             .then((value) async {
           if (value) {
             emit(
@@ -63,6 +63,7 @@ class LoginCubit extends Cubit<LoginState> {
                 status: LoginStatus.success,
               ),
             );
+
             // getIt<SharedPreferencesModel>()
             //     .setLoginStatus(true); // prefs.setBool("isLoggedIn", true);
             // getIt<SharedPreferencesModel>().setLoginEmail(userEmail);
@@ -70,14 +71,20 @@ class LoginCubit extends Cubit<LoginState> {
 
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context) {
+                 // showInSnackBar(context,"Success", Colors.green);
               return const PostScreen();
             }));
           } else {
+            log("$value",name: "state");
             emit(
               state.copyWith(
                 status: LoginStatus.failure,
               ),
             );
+
+            showInSnackBar(context,"Failed", Colors.red);
+
+
           }
         }).onError((error, stackTrace) {
           emit(
@@ -85,6 +92,8 @@ class LoginCubit extends Cubit<LoginState> {
               status: LoginStatus.failure,
             ),
           );
+
+          showInSnackBar(context,"Failed", Colors.red);
         });
         return userList;
       } else {
@@ -96,11 +105,13 @@ class LoginCubit extends Cubit<LoginState> {
         throw Exception("Failed to load post");
       }
     } on SocketException {
+
       emit(
         state.copyWith(
-          status: LoginStatus.failure,
+          status: LoginStatus.internetIssue,
         ),
       );
+      showInSnackBar(context,"Internet Issue", Colors.blueGrey);
       // Handle socket exception
       return Future.error("No Internet Connection");
     } on TimeoutException {
@@ -125,7 +136,7 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  Future<bool> checkUserExists(String userEmail, List<UserModel> listUserModel,
+  Future<bool> checkUserExists(BuildContext context,String userEmail, List<UserModel> listUserModel,
       UserModel userModel) async {
     for (userModel in listUserModel) {
       userModel =
@@ -144,9 +155,20 @@ class LoginCubit extends Cubit<LoginState> {
       log("${userModel.email}", name: "email");
       log(userModelData, name: "userModelData");
 
-
       return true;
     }
+    //showInSnackBarError(context,"Failed", Colors.red);
+
     return false;
   }
+
+  void showInSnackBar(BuildContext context,String value, Color color) {
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) {
+      return const PostScreen();
+    }));
+    var snackBar = SnackBar(content: Text(value), backgroundColor: color);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
 }

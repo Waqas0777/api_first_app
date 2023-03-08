@@ -1,5 +1,4 @@
 import 'package:api_first_app/database/db/app_database.dart';
-import 'package:api_first_app/model/post_model.dart';
 import 'package:api_first_app/screens/user_posts/cubit/user_posts_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +15,14 @@ class UserPostsScreen extends StatefulWidget {
 
 class _UserPostsScreenState extends State<UserPostsScreen> {
   int id = getIt<SharedPreferencesModel>().getLoginId("userId").toInt();
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {});
+  }
 
 
   @override
@@ -49,20 +56,7 @@ class _UserPostsScreenState extends State<UserPostsScreen> {
                               child: CircularProgressIndicator());
                         case UserPostsStatus.initial:
                           return const Center(
-                            // child: CupertinoButton(
-                            //   color: Colors.blue,
-                            //   onPressed: () {
-                            //     BlocProvider.of<UserPostsCubit>(context)
-                            //         .fetchPostsById(id);
-                            //     // .onSearchById(id);
-                            //     // Navigator.push(context,
-                            //     //     MaterialPageRoute(builder: (context) {
-                            //     //   return const UserPostsScreen();
-                            //     // }));
-                            //   },
-                            //   child: const Text("Fetch Post"),
-                            // ),
-                          );
+                              child: Text("No Data Added Yet"));
 
                       // case UserPostsStatus.searchingStatus:
                       //   return Column(
@@ -72,29 +66,7 @@ class _UserPostsScreenState extends State<UserPostsScreen> {
                         //state.users.toString()
                           return Column(
                             children: [
-                              // Padding(
-                              //   padding: const EdgeInsets.only(left: 5.0, right: 5),
-                              //   child: TextField(
-                              //     onChanged: (value) =>
-                              //         BlocProvider.of<PostCubit>(context)
-                              //             .onSearch(value),
-                              //     decoration: InputDecoration(
-                              //         labelText: "Search Post by Title",
-                              //         fillColor: Colors.white,
-                              //         border: OutlineInputBorder(
-                              //           borderRadius: BorderRadius.circular(25.0),
-                              //           borderSide: const BorderSide(),
-                              //         ),
-                              //         prefixIcon: const Icon(Icons.search)
-                              //         //fillColor: Colors.green
-                              //         ),
-                              //     keyboardType: TextInputType.text,
-                              //     style: const TextStyle(
-                              //       fontFamily: "Poppins",
-                              //     ),
-                              //     // controller: nameController,
-                              //   ),
-                              // ),
+
                               buildListViewWidget(context, state)
                             ],
                           );
@@ -123,17 +95,7 @@ class _UserPostsScreenState extends State<UserPostsScreen> {
                         case UserPostsStatus.socketStatus:
                           return Column(
                             children: const [
-                              // Center(
-                              //   child: CupertinoButton(
-                              //     color: Colors.blue,
-                              //     onPressed: () {
-                              //       BlocProvider.of<UserPostsCubit>(context)
-                              //           .fetchPostsById(id);
-                              //       // .onSearchById(id);
-                              //     },
-                              //     child: const Text("Fetch Post"),
-                              //   ),
-                              // ),
+
                               SizedBox(
                                 height: 10,
                               ),
@@ -204,8 +166,9 @@ class _UserPostsScreenState extends State<UserPostsScreen> {
         itemCount: state.userPostTableDataList!.length,
         itemBuilder: (BuildContext context, int index) {
           var post = BlocProvider
-              .of<UserPostsCubit>(context).userPostTableData[index];
-              // .postList[index];
+              .of<UserPostsCubit>(context)
+              .userPostTableData[index];
+          // .postList[index];
           return buildCardWidget(post);
         });
   }

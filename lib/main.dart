@@ -24,6 +24,7 @@ Future<void> initDependencyInjection() async {
   getIt.registerSingleton<SharedPreferencesModel>(
       SharedPreferencesModel(sharedPreferences));
   getIt.registerSingleton<LoginCubit>(LoginCubit());
+  getIt.registerSingleton<PostCubit>(PostCubit());
   getIt.registerSingleton<UserPostsCubit>(UserPostsCubit());
   getIt.registerSingleton<UserTodosCubit>(UserTodosCubit());
   getIt.registerSingleton<AppDatabase>(AppDatabase());
@@ -42,16 +43,11 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<UserCubit>(create: (BuildContext context) => UserCubit()),
         BlocProvider<PostCubit>(create: (BuildContext context) => PostCubit()),
-        BlocProvider<SplashCubit>(
-            create: (BuildContext context) => SplashCubit()),
-        BlocProvider<UserPostsCubit>(
-            create: (BuildContext context) => UserPostsCubit()),
-        BlocProvider<UserTodosCubit>(
-            create: (BuildContext context) => UserTodosCubit()),
-        BlocProvider<UserCommentCubit>(
-            create: (BuildContext context) => UserCommentCubit()),
-        BlocProvider<LoginCubit>(
-            create: (BuildContext context) => LoginCubit()),
+        BlocProvider<LoginCubit>(create: (BuildContext context) => LoginCubit()),
+        BlocProvider<SplashCubit>(create: (BuildContext context) => SplashCubit()),
+        BlocProvider<UserPostsCubit>(create: (BuildContext context) => UserPostsCubit()..getAllPostsById(id)),
+        BlocProvider<UserTodosCubit>(create: (BuildContext context) => UserTodosCubit()..getAllTodosById(id)),
+        BlocProvider<UserCommentCubit>(create: (BuildContext context) => UserCommentCubit()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
